@@ -18,4 +18,17 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        jcenter() {
+            content {
+                includeModule("com.yqritc", "android-scalablevideoview")
+                includeGroup("com.google.android.exoplayer")
+            }
+        }
+        google()
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+
 apply plugin: "com.facebook.react.rootproject"

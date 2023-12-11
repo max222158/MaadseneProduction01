@@ -1,0 +1,812 @@
+import moment from 'moment';
+import 'moment/locale/fr';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ScrollView, ActivityIndicator, Button, FlatList, Modal,StatusBar,
+     Platform, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View,Dimensions, Animated,Image,ImageBackground } from 'react-native';
+import ScreenBrightness from 'react-native-screen-brightness';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { WebView } from 'react-native-webview';
+import htmlPathIos from '../../templates/index.html';
+import EMBEDDED_HTML from '../../assets/embededHtml';
+
+import GestureRecognizer from 'react-native-swipe-detect';
+import { PanGestureHandler, State, TapGestureHandler,  Directions,
+    FlingGestureHandler,
+    GestureHandlerRootView } from 'react-native-gesture-handler';
+import themeToStyles from '../../utils/themeToStyles';
+import ModalNote from '../ModalNote';
+import ModalNotes from '../ModalNotes';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import style from './style';
+import {_getPages1,_storePages,_storeNote} from './store';
+import { event, useAnimatedGestureHandler } from 'react-native-reanimated';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { openDatabase } from "react-native-sqlite-storage";
+import Slider from 'react-native-slider';
+import { set } from 'immer/dist/internal';
+import {useSelector} from 'react-redux';
+
+const db = openDatabase({
+    name: "maadsene",
+  });
+const lightMode = {
+    bg: '#FFF !important',
+    fg: '#000 !important',
+    height:1.5,
+    font:'Times New Roman',
+    size:'20px'
+    
+};
+
+const darkMode = {
+    bg: '#000 !important',
+    fg: '#FFF !important',
+    height:1.5,
+    font:'Times New Roman',
+    size:'20px'
+}
+
+const defautThemeReader = {
+    bg: '#FFF !important',
+    fg: '#000 !important',
+    height:2,
+    font:'Times New Roman',
+    size:'25px'
+    
+}
+
+const heightWidow = Dimensions.get('window').height;
+const widthWindow = Dimensions.get('window').width;
+function Reader({ navigation, route,goBack }) {
+    const { title, path,idbook,image,imageUrl } = route.params;
+    const webview = useRef();
+    const fontSizes = ["20px","21px","22px","23px"];
+    const [fontSizeIndex, setFontSizeIndex] = useState(0); // Tamanho de fonte original (100%)
+    const [theme, setTheme] = useState(lightMode);
+    const [cl, setCl] = useState();
+    const [cl1, setCl1] = useState();
+    const [searchResults, setSearchResults] = useState([]);
+    const [search, setSearch] = useState('');
+    const [searchedWord, setSearchedWord] = useState('');
+    const [isModalVisibleFont, setisModalVisibleFont] = useState(false);
+    const [isModalVisibleSearch, setisModalVisibleSearch] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [themeStyle, setThemeStyle] = useState({ backgroundColor: '#FFF' });
+    const [fontStyle, setFontStyle] = useState({ color: '#000' })
+    const [lastMarkedCfi, setLastMarkedCfi] = useState("");
+    const [totalPages, setTotalPages] = useState(null);
+    const [progress, setProgress] = useState(1);
+    const [locations, setLocations] = useState(null);
+    const [isModalVisibleNote, setIsModalVisibleNote] = useState(false);
+    const [isModalVisibleNoteList, setIsModalVisibleNoteList] = useState(false);
+    const [currentNote, setCurrentNote] = useState(null);
+    const [notes, setNotes] = useState([]);
+    const [pages, setPages] = useState([]);
+    const [isMarked, setIsMarked] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [openBook, setOpenBook] = useState(false);
+    const [brightness, setBrightness] = useState(0);
+    const [searchPage, setSearchPage] = useState(progress);
+    const [isSearchingPage, setIsSearchingPage] = useState(false);
+    const [isVisibleBar, setIsVisibleBar] = useState(true);
+    const [lastLoc,setLastLoc] = useState(0);
+    const [zoom,setZoom] = useState(100);
+    const [js,setJs] = useState(0);
+    const [isStart,setIsStart] = useState(false);
+    const [finish,setIsFinish] = useState(false);
+    const [statusV,setStatusV] = useState(false);
+    const [visibleToc,setvisibleToc] = useState(false);
+    const [visibleSetting,setvisibleSetting] = useState(false);
+    const [visiblebookmark,setvisiblebookmark] = useState(false);
+    
+    const [toc,setToc] = useState(null);
+    const [url,setUrl] = useState("");
+    const [cfi,setCfi] = useState("");
+    const [pathUrl,setPathUrl] = useState(path);
+    const [urlEntier,setUrlEntier] = useState("");
+
+    const isEpubReader = useSelector(state => state.userAuth.isEpubReader);
+    
+    function changeBrightness(value) {
+        ScreenBrightness.setBrightness(value);
+        AsyncStorage.setItem('brightness', value.toString())
+    }
+    const createTables = () => {
+        db.transaction(txn => {
+          txn.executeSql(
+            `CREATE TABLE IF NOT EXISTS bookmark (id INTEGER PRIMARY KEY AUTOINCREMENT, bookmark json,idbook VARCHAR(30))`,
+            //`DROP TABLE IF EXISTS bookmark `,
+
+            [],
+            (sqlTxn, res) => {
+              console.log("table created successfully");
+              
+            },
+            error => {
+              console.log("error on creating table " + error.message);
+            },
+          );
+        });
+      };
+
+      const retrieveBookmark = () => {
+
+    
+        db.transaction(txn => {
+
+
+
+          txn.executeSql(
+            `SELECT * FROM bookmark where idbook=? LIMIT 1`,
+            [idbook],
+            (sqlTxn, res) => {
+              console.log("bookmark retrieved successfully"+idbook);
+              let len = res.rows.length;
+              //alert(len);
+    
+              if (len > 0) {
+             
+                let results = [];
+                for (let i = 0; i < len; i++) {
+                  let item = res.rows.item(i);
+                  results.push(item.bookmark );
+                  //alert(item.bookmark);
+                 // alert(item.location+"----"+item.idbook);
+                }
+
+                let loc =JSON.parse(results);
+                setPages(loc);
+                //alert(JSON.stringify(loc));
+                
+                //alert(typeof(loc));
+                //setLocations(loc);
+              }else{
+
+                
+             
+              
+            db.transaction(txn => {   
+                txn.executeSql(
+                    `INSERT INTO bookmark (bookmark,idbook) VALUES (?,?)`,
+                    ["", idbook],
+                    (sqlTxn, res) => {
+                      //console.log(`${category} category added successfully`);
+                      //alert("insertion");
+                      
+                    },
+                    error => {
+                      console.log("error on adding category " + error.message);
+                    },
+                  );
+                  
+                });
+
+              }
+            },
+            error => {
+              console.log("error on getting categories " + error.message);
+            },
+          );
+        });
+      };
+
+    //let animatedHederValue = new Animated.Value(0);
+    const fadeAnim = useRef(new Animated.Value(1)).current;
+    const fadeIn = () =>{
+        Animated.timing(fadeAnim,{
+            toValue:1,
+            duration:1000,
+            useNativeDriver:true
+        }).start();
+    }
+
+    const fadeOut = () =>{
+        Animated.timing(fadeAnim,{
+            toValue:0,
+            duration:500,
+            useNativeDriver:true
+        }).start();
+    }
+    useEffect(() => {
+
+        //alert(JSON.stringify(pages));
+        //AsyncStorage.clear();
+        //alert(url);
+        //alert("url");
+        //ScreenBrightness.setBrightness(brightness);
+       console.log(pathUrl);
+       _getBrightness();
+            
+        
+    }, []);
+    useEffect(() => {
+        
+        //alert(JSON.stringify(pages));
+        //AsyncStorage.clear();
+        
+       console.log(pathUrl);
+            
+        
+    }, [pathUrl]);
+
+    useLayoutEffect(()=>{
+
+        
+
+        //alert(lastLoc);
+        //_getLocation();
+        createTables();
+        retrieveBookmark();
+
+    
+        
+    
+    
+    },[]);
+
+
+    const _storageTheme = async (theme) => {
+        try {
+                
+            return await AsyncStorage.setItem('theme', theme);
+    
+        } catch (error) {
+          // Error saving data
+        }
+    };
+
+
+
+    const _storeLocation = async (uri) => {
+        try {
+            console.log("--------------------------"+idbook+"---------"+uri);
+                
+            return await AsyncStorage.setItem('location'+idbook, uri);
+
+
+        } catch (error) {
+          // Error saving data
+        }
+    };
+    async function _getBrightness() {
+          try {
+             
+             const value = await AsyncStorage.getItem('brightness');
+             setBrightness(+value);
+
+
+
+          } catch (error) {
+            // Error retrieving data
+          }  
+    }
+
+
+
+
+
+
+    function refresh(tema) {
+        webview.current?.injectJavaScript(`
+        window.THEME = ${JSON.stringify(themeToStyles(tema))};
+        window.rendition.themes.register({ theme: window.THEME });
+        window.rendition.themes.select('theme'); 
+        window.rendition.views().forEach(view => view.pane ? view.pane.render() : null)
+        `);
+    }
+
+
+
+
+
+
+    
+
+    function goOpenConfig() {
+        webview.current?.injectJavaScript(`$(".icon-settings").trigger("click")`);
+    }
+
+
+
+    
+    function handleMessage(msg) {
+        let parsedData = JSON.parse(msg.nativeEvent.data);
+        let { type } = parsedData;
+
+        delete parsedData.type;
+        switch (type) {
+            case 'search':
+                const results = parsedData.results;
+                if (results.length > 0) {
+                    setSearchResults(results);
+                    //console.log("search----------",results);
+                }
+                return;
+            case 'loc':
+
+                setProgress(parsedData.progress + 1);
+                setSearchPage(parsedData.progress + 1);
+                setCl(parsedData.cfi);
+               
+                return;
+            case 'isStart':
+                setIsStart(true);
+
+                   
+                return;
+            case 'start':
+                setIsStart(true);
+                //alert("start");
+    
+                       
+                return;
+
+            case 'finish':
+                    setIsFinish(true);
+                    //alert("start true");
+        
+                           
+                    return;
+            case 'TOfMatiere':
+                setToc(parsedData.toc);
+                //alert(JSON.stringify(toc));
+
+
+                return;
+            case 'highlight':
+                return;
+                
+            case 'readiumtest':
+                    alert("test readium");
+                    setOpenBook(true);
+                    
+                    
+                return;
+            case 'textBycfi':
+                //alert(JSON.stringify(cfi));
+                setCfi(parsedData.bycfi);
+                
+            case 'isLoading':
+                setIsLoading(parsedData.isLoading);
+                return;
+            case 'bodyClick':
+                if(isVisibleBar){
+                    setIsVisibleBar(false)
+                    fadeOut();
+                    setStatusV(true);
+                    setvisibleToc(false);
+                    setvisibleSetting(false);
+                    setvisiblebookmark(false);
+                }else{
+                    fadeIn();
+
+                    setIsVisibleBar(true);
+                    setStatusV(false);
+                }
+                return;
+
+            default:
+                return;
+        }
+    }
+
+
+    function goDarkMode(value) {
+        if (value == 2 && isDarkMode == false) {
+            var newTheme = darkMode;
+            newTheme.size = fontSizes[fontSizeIndex];
+            setIsDarkMode(true);
+            setTheme(newTheme);
+            setThemeStyle({ backgroundColor: '#000' });
+            setFontStyle({ color: '#FFF' });
+            refresh(darkMode);
+            _storageTheme("dark");
+
+        }
+        else if (value == 1 && isDarkMode == true) {
+            var newTheme = lightMode;
+            newTheme.size = fontSizes[fontSizeIndex];
+            setIsDarkMode(false);
+            setTheme(newTheme);
+            setThemeStyle({ backgroundColor: '#FFF' });
+            setFontStyle({ color: '#000' });
+            refresh(lightMode);
+            _storageTheme("light");
+        }
+
+    }
+    function savePage() {
+        var newPages = pages;
+        //alert(newPages);
+
+        if (isMarked) {
+            var index = -1;
+            for (let i = 0; i < pages.length; i++) {
+                const page = pages[i];
+                if (page.cfi == url) {
+                    index = i;
+                    break;
+                }
+
+            }
+            if (index > -1) {
+                let newPages = pages;
+                newPages.splice(index, 1);
+                setPages(newPages);
+                setIsMarked(false);
+            }
+        } else {
+            //newPages.push({ progress, cfi: url, date: new Date() });
+        
+
+/*             for (let i = 0; i < pages.length; i++) {
+                const page = pages[i];
+                if (page.cfi == cl) {
+                    index = i;
+                    return;
+                }
+            } */
+
+            newPages.push({ progress, cfi: url,text:cfi,path:urlEntier, date: new Date() });
+              
+             db.transaction(txn => {   
+                txn.executeSql(
+                    `Update bookmark set bookmark = ? where idbook =? `,
+                    [JSON.stringify(newPages), idbook],
+                    (sqlTxn, res) => {
+                      //console.log(`${category} category added successfully`);
+                      //alert("update"+JSON.stringify(newPages));
+                      
+                      
+                    },
+                    error => {
+                      console.log("error on adding category " + error.message);
+                    },
+                  );
+                  
+                });
+            setIsMarked(true);
+
+        } 
+        //_storePages(idbook,newPages);
+        
+        //console.log("newPages",newPages);
+    }
+
+    const tableOfMatiere = ()=>{
+        if(visibleToc == true){
+
+            setvisibleToc(false);
+        }else{
+            setvisibleToc(true);
+        }
+        //webview.current?.injectJavaScript(`$("#dropmenu").addClass("open");true`);
+        //webview.current?.injectJavaScript(`$("#dropmenu").attr("class") == "dropdown open"? $("#dropmenu").removeClass("open"): $("#dropmenu").addClass("open");true`);
+    }
+
+    const settingsFunc = () => {
+
+        
+        if(visibleSetting == true){
+
+            setvisibleSetting(false);
+        }else{
+            setvisibleSetting(true);
+            setvisiblebookmark(false);
+        }
+    }
+      if(js == null){
+
+         return (                 
+        
+         <View style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center',backgroundColor:"white" }}>
+         <ActivityIndicator color="#000" size='large' style={{ marginBottom: 10 }} />
+         <Text style={{ color: '#000', fontWeight: '500', textAlign: 'center' }}>Chargement...</Text>
+        </View>);
+     }
+
+    return (
+
+        <SafeAreaView  style={[style.container,{backgroundColor:"black"}]} onPress={()=>{}}>
+
+
+            <StatusBar barStyle={isDarkMode?"light-content":"dark-content"} backgroundColor="transparent" hidden={!isVisibleBar} />
+                
+
+{/*             <GestureRecognizer
+                onSwipeLeft={() => {
+                    //alert('1');
+                    webview.current?.injectJavaScript(`$("#right-page-btn").trigger("click");true`);                
+                }}
+                onSwipeRight={() => {
+                    //alert(2);
+                    webview.current?.injectJavaScript(`$("#left-page-btn").trigger("click");true`);
+                }}
+                config={{
+                    velocityThreshold: 0.1,
+                    directionalOffsetThreshold: 100,
+                }}
+                style={{
+                    width:'100%',
+                    height:'100%',
+                    position: 'relative',
+                }}
+            > */}
+
+        <GestureHandlerRootView                 
+                style={{
+                    width:'100%',
+                    height:'100%',
+                    position: 'relative',
+                }}>
+            <FlingGestureHandler
+                direction={Directions.RIGHT}
+                onHandlerStateChange={({ nativeEvent }) => {
+                if (nativeEvent.state === State.ACTIVE ) {
+                    webview.current?.injectJavaScript(`$("#left-page-btn").trigger("click");true`);
+                }
+                }}
+            >
+                <FlingGestureHandler
+                direction={Directions.LEFT}
+                onHandlerStateChange={({ nativeEvent }) => {
+                    if (nativeEvent.state === State.ACTIVE) {
+                        webview.current?.injectJavaScript(`$("#right-page-btn").trigger("click");true`);  
+                    }
+                }}
+                >
+        
+            <View style={{backgroundColor:"blue",flex:1}}>
+
+                {
+                    isEpubReader?
+                
+
+                <WebView
+                    scalesPageToFit={false}
+                    javaScriptEnabled={true}
+                    pagingEnabled={false}
+                    ref={webview}
+                    source={{uri: pathUrl}}
+                    //source={{uri:'https://reader.lesastic.com/?epub=epub_content%2Fmoby_dick'}}
+                    //source={{ html : HTML }}
+                    //injectedJavaScriptBeforeContentLoaded={injectJavaScript}
+                    originWhitelist={['*']}
+                    scrollEnabled={false}
+                    onMessage={(event) => {
+                        handleMessage(event)
+                    }}
+                    allowUniversalAccessFromFileURLs={true}
+                    allowFileAccessFromFileURLs={true}
+                    allowFileAccess
+                    style={[style.manager, {
+                        backgroundColor: isDarkMode ? '#000' : '#FFF',flex:1 
+                    }]}
+                    textZoom={zoom}
+                    allowsLinkPreview={false}
+                    onError={()=>{
+
+                        navigation.goBack();
+
+
+                    }}
+                    //onNavigationStateChange={()=>{}}
+                    //incognito={true}
+                    //cacheMode="LOAD_DEFAULT"
+                     onLoadProgress = {e => {
+                        let {url} = e?.nativeEvent;
+                       
+                        let url_string = JSON.stringify(url);
+                        //alert(url_string);
+                        let paramString = url_string.split('?')[1];
+                        let url1 = paramString;
+                        
+                        let regex = /[?&]([^=#]+)=([^&#]*)/g,
+                          params = {},
+                          match;
+                        while (match = regex.exec(url1)) {
+                          params[match[1]] = match[2];
+                        }
+                        
+                        
+                         
+
+                        if(JSON.stringify(params.goto) != undefined){
+                            console.log(params.goto);
+                            //alert(url_string);
+                            setUrlEntier(url_string);
+                            setUrl(JSON.stringify(params.goto));
+                            try{
+
+                                for (let i = 0; i < pages.length; i++) {
+                                
+                                    const page = pages[i];
+                                   // alert(JSON.stringify(params.goto)+"-----"+page.cfi);
+                                    if (page.cfi == JSON.stringify(params.goto) ) {
+                                        //alert(0);
+                                        setIsMarked(true);
+                                        return;
+                                    }
+                                }
+                            }catch(e){
+
+                                //alert(e);
+                            }
+                         }
+                         setIsMarked(false); 
+                        //_storeLocation(null);
+
+                        //
+                        //var c = url.searchParams.get("goto");
+    
+                  }}  
+                />: alert("Expired link")
+
+                }
+            </View>
+            
+        </FlingGestureHandler>
+        </FlingGestureHandler>
+        </GestureHandlerRootView>
+{
+    isStart == false ? <View style={{ flex: 1, position: 'absolute', width: '100%', height: '100%', justifyContent: 'center',alignContent:'center',alignItems:'center', backgroundColor:"white" }}>
+            <ImageBackground
+                    source={{ uri: "https://maadsene.com/couverture/" + image }}
+                    //resizeMode="cover"
+                    style={{width:200,height:300,alignItems:"center",justifyContent:'center'}}
+                    imageStyle={{borderWidth:0}}
+
+            >
+                <ActivityIndicator size={40} color="black" style={{backgroundColor:"white",borderRadius:50,padding:10}} />
+{/*                 <Text style={{ color: '#000', fontWeight: '500', textAlign: 'center' }}>Chargement...</Text> */}
+            </ImageBackground>
+
+   </View>:null
+}    
+        <Animated.View
+            style={[style.bar, { backgroundColor: isDarkMode? '#000':'#ffff',opacity:fadeAnim, }]}>
+
+                <View style={[style.header,{backgroundColor:'#00000000',flex:1 }]}>
+                    <View style={{ flexDirection: 'row',flex:2/3 }}>
+                        <TouchableOpacity style={{ padding: 10 }} onPress={() => navigation.goBack()}>
+                            <Icon name="chevron-back-outline" size={35} color={isDarkMode ? '#FFF' : '#000'} />
+                        </TouchableOpacity>
+                        <TouchableOpacity /*disabled={isLoading?true:false}*/ style={{ padding: 10 }} onPress={() => tableOfMatiere()}>
+                            <Icon name="list-outline" size={35} color={isDarkMode ? '#FFF' : '#000'} />
+                        </TouchableOpacity>
+                        <TouchableOpacity /*disabled={isLoading?true:false}*/ onPress={goOpenConfig} style={{ padding: 10, marginRight: 10 }}>
+                            <Icon name="text-outline" size={30} color={isDarkMode ? '#FFF' : '#000'} />
+                        </TouchableOpacity>
+
+                        <Text style={[{ fontSize: 20, fontWeight: '500' }, fontStyle]}>{title}</Text>
+
+                    </View>
+                    <View style={{flex:1/3,flexDirection:'row',alignItems:'flex-end',alignContent:'flex-end',justifyContent:'flex-end'}}>
+                        <TouchableOpacity /*disabled={isLoading?true:false}*/ style={{ paddingTop: 10,paddingBottom:10,alignSelf:'flex-end' }} onPress={savePage}>
+                            <Icon name={isMarked ? "bookmark" : "bookmark-outline"} size={30} color={isDarkMode ? '#FFF' : '#000'} style={style.iconMargin} />
+                        </TouchableOpacity>
+                        <TouchableOpacity /*disabled={isLoading?true:false}*/ 
+                            style={{ paddingTop: 10,paddingBottom:10, alignSelf:'flex-end'}} onPress={settingsFunc}>
+                            <Icon name="ellipsis-vertical" size={30} color={isDarkMode ? '#FFF' : '#000'} style={style.iconMargin} />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+        </Animated.View>
+        {visibleToc?
+
+            <SafeAreaView style={{position:'absolute',backgroundColor:'white',top:60,width:'80%',height:'100%',borderColor:"#dddddd82",borderWidth:2}} >
+                    
+                        <Text style={{fontSize:22,alignSelf:'center',paddingTop:20,marginBottom:15}}>Table des matières</Text>
+    <FlatList
+      style={{backgroundColor:"#blue"}}
+
+        data={toc}     
+        renderItem={({ item }) => (
+          <TouchableOpacity style={{paddingLeft:25,paddingTop:10,
+            paddingBottom:10,paddingRight:18,borderBottomWidth:1,margin:5,
+            borderTopWidth:1,borderColor:"#dddddd82"}}
+           onPress={()=>{
+                webview.current?.injectJavaScript(`$("#${item.id}").trigger('click');true`);
+                //alert(item.id);
+                
+                setvisibleToc(false);
+            }}>
+            
+            <Text style={{color:'black',fontSize:15}}>{item.chapitre}</Text>
+          </TouchableOpacity>
+
+         
+                
+
+              )}
+              
+              />
+
+            </SafeAreaView>:null}
+            
+            {visibleSetting?
+
+                <SafeAreaView style={{position:'absolute',padding:10,backgroundColor:'white',top:60,right:5,width:200,borderColor:"#dddddd82",borderWidth:2}} >
+                        
+                        <TouchableOpacity /*disabled={isLoading?true:false}*/ 
+                            style={{ paddingTop: 10,paddingBottom:10,paddingLeft:10}} onPress={()=>{setvisibleSetting(false);setvisiblebookmark(true)}}>
+                            <Text style={{fontSize:16,marginBottom:15}}>Pages enregistrées</Text>
+                        </TouchableOpacity>
+{/*                         <View style={{paddingLeft:10}}>
+
+                            <Text style={{fontSize:15}}>Luminosité</Text>
+                       
+                                <Slider
+                                    minimumValue={0}
+                                    maximumValue={1}
+                                    minimumTrackTintColor="#307ecc"
+                                    maximumTrackTintColor="#000000"
+                                    value={brightness}
+                                    onValueChange={(brightness) => {
+                                        setBrightness(brightness);
+                                        changeBrightness(brightness);
+                                    }}
+                                    style={{ paddingLeft:10}}
+                                />
+                       </View> */}
+
+                </SafeAreaView>:null}
+
+                {visiblebookmark?<SafeAreaView style={{position:'absolute',backgroundColor:'white',top:60,width:'100%',height:'100%',borderColor:"#dddddd82",borderWidth:2}} >
+                    <View style={{flexDirection : 'row',padding:20,marginBottom:15}}>
+                        <View style={{flex:1/2}}>
+                            <Text style={{fontSize:19}}>Pages enregistrées</Text>
+
+                        </View>
+                        <View style={{flex:1/2}}>
+                            <TouchableOpacity /*disabled={isLoading?true:false}*/ 
+                                style={{ backgroundColor:'red',borderRadius:50,width:30,height:30,alignSelf:'flex-end',alignItems:'center'}} onPress={()=>{setvisiblebookmark(false)}}>
+                                <Text style={{fontSize:20,color:'white'}}>X</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                    
+                    <FlatList
+                        style={{backgroundColor:"#blue",marginBottom:70}}
+
+                        data={pages}     
+                        renderItem={({ item }) => (
+                        <TouchableOpacity style={{paddingLeft:25,paddingTop:10,paddingBottom:10,paddingRight:18,borderBottomWidth:1,margin:5,borderTopWidth:1,borderColor:"#dddddd82"}}
+                        onPress={()=>{
+                                //setPathUrl(pathUrl+"&goto ="+item.cfi);
+                                //webview.current?.injectJavaScript(`$("#firstdivmaad").trigger("click",['par1','par2']);true`); 
+                               //
+                               
+                               setPathUrl((item.path).slice(1,-1));
+                               //alert(pathUrl);
+                               setvisibleToc(false);
+                            setvisiblebookmark(false);
+                            setIsMarked(true);
+
+                            
+                                
+                                
+                            }}>
+                            
+                            <Text style={{color:'black',fontSize:15}}>{moment(item.date).fromNow()}</Text>
+                            <Text numberOfLines={3}>{item.text}</Text>
+                        </TouchableOpacity>
+
+                        
+                                
+
+                            )}
+                            
+                    />
+
+        </SafeAreaView>:null}
+    </SafeAreaView>
+    
+    );
+
+}
+
+export default Reader;

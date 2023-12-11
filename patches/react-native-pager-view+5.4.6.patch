@@ -1,0 +1,80 @@
+diff --git a/node_modules/react-native-pager-view/.DS_Store b/node_modules/react-native-pager-view/.DS_Store
+new file mode 100644
+index 0000000..691b6d1
+Binary files /dev/null and b/node_modules/react-native-pager-view/.DS_Store differ
+diff --git a/node_modules/react-native-pager-view/ios/ReactNativePageView.m b/node_modules/react-native-pager-view/ios/ReactNativePageView.m
+index 78f266b..54f13af 100644
+--- a/node_modules/react-native-pager-view/ios/ReactNativePageView.m
++++ b/node_modules/react-native-pager-view/ios/ReactNativePageView.m
+@@ -20,6 +20,7 @@
+ 
+ @property(nonatomic, strong) NSHashTable<UIViewController *> *cachedControllers;
+ @property (nonatomic, assign) CGPoint lastContentOffset;
++@property(nonatomic, assign) BOOL animating;
+ 
+ - (void)goTo:(NSInteger)index animated:(BOOL)animated;
+ - (void)shouldScroll:(BOOL)scrollEnabled;
+@@ -174,6 +175,9 @@
+     }
+     __weak ReactNativePageView *weakSelf = self;
+     uint16_t coalescingKey = _coalescingKey++;
++    if (animated == YES) {
++        self.animating = YES;
++    }
+     
+     [self.reactPageViewController setViewControllers:@[controller]
+                                            direction:direction
+@@ -182,7 +186,9 @@
+         __strong typeof(self) strongSelf = weakSelf;
+         strongSelf.currentIndex = index;
+         strongSelf.currentView = controller.view;
+-        
++        if (finished) {
++            strongSelf.animating = NO;
++        }        
+         if (strongSelf.eventDispatcher) {
+             if (strongSelf.lastReportedIndex != strongSelf.currentIndex) {
+                 if (shouldCallOnPageSelected) {
+@@ -239,27 +245,21 @@
+     self.reactPageIndicatorView.currentPage = index;
+     long diff = labs(index - _currentIndex);
+     
+-    if (isForward && diff > 0) {
+-        for (NSInteger i=_currentIndex; i<=index; i++) {
+-            if (i == _currentIndex) {
+-                continue;
+-            }
+-            [self goToViewController:i direction:direction animated:animated shouldCallOnPageSelected: i == index];
+-        }
+-    }
+-    
+-    if (!isForward && diff > 0) {
+-        for (NSInteger i=_currentIndex; i>=index; i--) {
+-            if (index == _currentIndex) {
+-                continue;
+-            }
+-            [self goToViewController:i direction:direction animated:animated shouldCallOnPageSelected: i == index];
+-        }
+-    }
+-    
+-    if (diff == 0) {
+-        [self goToViewController:index direction:direction animated:animated shouldCallOnPageSelected:YES];
+-    }
++     if (isForward && diff > 0) {
++        for (NSInteger i=_currentIndex+1; i<=index; i++) {
++            [self goToViewController:i direction:direction animated:(!self.animating && i == index) shouldCallOnPageSelected: i == index];
++         }
++     }
++    
++     if (!isForward && diff > 0) {
++        for (NSInteger i=_currentIndex-1; i>=index; i--) {
++            [self goToViewController:i direction:direction animated:(!self.animating && i == index) shouldCallOnPageSelected: i == index];
++         }
++     }
++     
++     if (diff == 0) {
++        [self goToViewController:index direction:direction animated:NO shouldCallOnPageSelected:YES];
++     }
+ }
+ 
+ - (void)goToViewController:(NSInteger)index
