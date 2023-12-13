@@ -1,17 +1,19 @@
-import { View, Text, ActivityIndicator } from 'react-native'
+import { View, Text, ActivityIndicator, Modal } from 'react-native'
 import React from 'react';
 import { Dimensions, StyleSheet,Image } from "react-native";
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { PanGestureHandler, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import  {useEffect, useRef, useState} from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
+import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
 
   SafeAreaView,
   TouchableOpacity,
   FlatList,
-  Animated,
   StatusBar
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import TrackPlayer, {
   Capability,
@@ -27,7 +29,17 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setPlayer } from '../../features/player/playerSlice';
-
+import { useAnimatedGestureHandler } from 'react-native-reanimated';
+import  {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  interpolate,
+  runOnJS,
+  runOnUI,
+  block,
+  call,
+} from 'react-native-reanimated';
 
 const { width: wWidth, height: wHeight } = Dimensions.get("window");
 const HEIGHT = wHeight;
@@ -55,6 +67,7 @@ const togglePlayBack = async playBackState => {
 const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
 
     const dispatch = useDispatch();
+    const translateY = useSharedValue(height);
     const stateAudio = useSelector(state=>state.audio.audio);
     const image = useSelector(state=>state.audio.image);
     const idsong = useSelector(state=>state.audio.idsong);
@@ -70,9 +83,27 @@ const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [episode,setEpisode] = useState("");
     const [imagePod,setImagePod] = useState("");
+    const [mode, setMode] = useState("clair");
+    const [visi1, setVisi1] = React.useState(true);
+    const [repeter, setRepeter] = useState(false);
+    const [color, setColor] = React.useState('gray');
 
+    const [isModalVisible1, setIsVisible2] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const [chargement, SetChargement] = React.useState(false);
+    const audio = useSelector((state) => state.audio.audio1);
+    const playpauseredux = useSelector((state) => state.audio.playpause);
+    const favorite = useSelector((state) => state.favorite.favorite);
+    const [visibility, setVisibility] = useState(false);
+    const chapitre = useSelector((state) => state.audio.chapitre);
+    const supportOfBook = useSelector((state) => state.audio.support);
+    const loadingPlayer = useSelector((state) => state.audio.loadingPlayer);
+    const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+    const [replay, setReplay] = useState(false);
+    const [numberStop, setNumberStop] = useState(0);
+    const minimize1 = useSelector((state) => state.audio.minimize1);
     // custom referecnces
-    const scrollX = useRef(new Animated.Value(0)).current;
+    //const scrollX = useRef(new Animated.Value(0)).current;
     const songSlider = useRef(null);
 
   
@@ -131,7 +162,10 @@ const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
           return 'repeat';
         }
       };
-    
+
+      const isExist = (book) => {
+        return favorite.find(item => item.id === idsong) !== undefined;
+    };
       const changeRepeatMode = () => {
         if (repeatMode == 'off') {
           TrackPlayer.setRepeatMode(RepeatMode.Track);
@@ -176,20 +210,7 @@ const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
         let trackIndex = await TrackPlayer.getCurrentTrack();
       })();
     
-        scrollX.addListener(({value}) => {
-          //   console.log(`ScrollX : ${value} | Device Width : ${width} `);
-    
-          const index = Math.round(value / width);
-          skipTo(index);
-          setsongIndex(index);
-    
-          //   console.log(`Index : ${index}`);
-        });
-    
-        return () => {
-          scrollX.removeAllListeners();
-          TrackPlayer.destroy();
-        };
+
       }, [stateAudio,idsong]);
     
       const skipToNext = () => {
@@ -217,212 +238,418 @@ const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
       };
 
   const [ minimize,setMinimize] = React.useState(false);
+
+
+  const gestureHandler = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+        ctx.startY = translateY.value;
+    },
+    onActive: (event, ctx) => {
+        translateY.value = ctx.startY + event.translationY;
+    },
+    onEnd: () => {
+        if (translateY.value > height * 0.3) {
+            runOnJS(closeView)();
+        } else {
+            translateY.value = withTiming(0);
+        }
+    },
+});
+const closeView = () => {
+  translateY.value = withTiming(height); // Faites glisser la vue en bas de l'écran
+ 
+      setIsVisible(false);
+      dispatch(setMinimized1(false));
+  // Attendez que l'animation soit terminée pour masquer la vue
+};
+
+const animatedStyle = useAnimatedStyle(() => {
+  return {
+      transform: [{ translateY: translateY.value }],
+  };
+});
+
+
+useEffect(()=>{
+  if(minimize1 == true){
+      translateY.value = withTiming(0);
+      setIsVisible(true);
+  }else{
+
+
+  }
+
+},[minimize1]);
   return (
-    <View style={minimize?[styles.containerMini,{bottom:marginB}]:styles.container}>
-        {minimize?
-        
-    
-          
-            <View style={{
-
-              //alignItems:"center",
-              //justifyContent:"space-between",
-              flexDirection:"row",
-
-              marginRight:5}}
+    <>
+    {isVisible && (
+        <PanGestureHandler onGestureEvent={gestureHandler}>
+            <Animated.View
+                style={[
+                    { position: 'absolute', width: '100%', height: '100%', zIndex: 9999, backgroundColor: mode == "clair" ? 'white' : '#141414' },
+                    animatedStyle,
+                ]}
             >
-              <View style={{width:'20%',justifyContent:'center',paddingLeft:5}}>
-              <TouchableOpacity  onPress={()=>{setMinimize(false)}}>
-                <Image
-                  style={{
-                    height:60,
-                    width: 60,
-                    borderRadius:50,
-                    backgroundColor:'#eef4f8'
-                  }}
-                  source={{
-                    uri:"https://maadsene.com/couverture/"+imagePod
-                  }}
-                />
-                </TouchableOpacity>
-              </View>
+                <View style={{
+                    flexDirection: 'row', alignItems: 'center',
+                    borderBottomWidth: 1, height: 50,
+                    borderBottomColor: mode == "clair" ? "#eee" : '#242424', justifyContent: 'space-between',
+                    borderTopLeftRadius: 5, borderTopRightRadius: 5, marginTop: StatusBar.currentHeight + 10
+                }}>
 
-              <View style={{width:'60%'}}>
-              <TouchableOpacity  onPress={()=>{setMinimize(false)}}>
-              <View>
-                <Text numberOfLines={1} style={{paddingTop:10,fontSize:16,fontWeight:'600',color:'black'}}>{trackTitle}</Text>
-                <Text numberOfLines={1}  style={{paddingBottom:10,paddingLeft:10,fontSize:14,fontWeight:'500',color:'black'}}>
-                  {trackArtist}
-                </Text>
-              
-              </View>
+                    <TouchableOpacity style={{ marginTop: 5, marginRight: 10, marginLeft: 10 }} onPress={() => { dispatch(setMinimized1(false)); }}>
+                        <Icon name="chevron-down-outline" color={mode == "clair" ? "black" : 'white'} size={20} />
+                    </TouchableOpacity>
+                    <Text style={{ alignItems: 'center', justifyContent: 'center' }}></Text>
+                    <Text style={{ alignItems: 'center', justifyContent: 'center', color: mode == "clair" ? "black" : 'white' }} >Chap </Text>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+                        <View>
+                            <TouchableOpacity onPress={() => {
+                                if (mode == 'clair') {
+
+                                    AsyncStorage.setItem('themeplayer', "sombre")
+                                        .then(() => {
 
 
-                </TouchableOpacity>
-              </View>
-              
-              <View style={{ flexDirection:"row",width:'20%',alignItems:'center',alignContent:'flex-end',justifyContent:'flex-end'}}>
-                {!isLoading?
-                <TouchableOpacity  onPress={() => togglePlayBack(playBackState)} style={{marginRight:10}}>
-                    <Ionicons
-                      name={
-                        playBackState === State.Playing
-                          ? 'ios-pause'
-                          : 'ios-play'
-                      }
-                      size={_ICON_SIZE} color="black" 
+                                        })
+                                        .catch((error) => {
+                                            //console.log('Erreur lors du stockage des données:', error);
+
+                                        });
+                                    setMode('sombre');
+                                } else {
+                                    AsyncStorage.setItem('themeplayer', "clair")
+                                        .then(() => {
+
+
+                                        })
+                                        .catch((error) => {
+                                            //console.log('Erreur lors du stockage des données:', error);
+
+                                        });
+
+                                    setMode('clair');
+
+                                }
+                            }} style={{ textAlign: 'center', alignItems: 'center' }}>
+                                <Icon size={18} name="contrast-outline" color={mode == "clair" ? "black" : 'white'} />
+                                <Text style={{ color: mode == "clair" ? "black" : 'white' }}>Mode Sombre</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                        <View style={{ marginRight: 10, marginLeft: 10 }}>
+                            <TouchableOpacity onPress={() => {
+
+                                if (visibility == true) {
+                                    setVisibility(false)
+                                } else {
+                                    setVisibility(true)
+                                }
+                            }} style={{ textAlign: 'center', alignItems: 'center' }}>
+                                <Icon size={18} name="list" color={mode == "clair" ? "black" : 'white'} />
+                                <Text style={{ color: mode == "clair" ? "black" : 'white' }}>Chapitres</Text>
+                            </TouchableOpacity>
+
+
+                        </View>
+
+
+                    </View>
+
+
+
+
+
+
+                </View>
+
+
+                {visi1 ? <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                    <ActivityIndicator size={30} color="gray" />
+                </View> :
+
+                    <ScrollView style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}>
+                        {
+                            !loadingPlayer ?
+                                <View style={{ width: dim300, height: dim300, marginTop: 30, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', borderRadius: 0, backgroundColor: '#0a3774' }}>
+
+
+                                    <Image source={{ uri: trackArtwork }} style={{ width: dim300, height: dim300, alignSelf: 'center', zIndex: 99 }} />
+
+                                    <Icon name="ios-musical-notes-outline" style={{ position: 'absolute' }} color="white" size={90} />
+                                </View> :
+                                <View style={{ width: dim300, height: dim300, marginTop: 30, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', borderRadius: 0, backgroundColor: '#0a3774' }}>
+
+
+
+                                    <Icon name="ios-musical-notes-outline" style={{ position: 'absolute' }} color="white" size={90} />
+                                </View>
+                        }
+
+
+                        <Text style={{ fontSize: 18, fontFamily: 'Poppins-Bold', color: mode == "clair" ? "black" : 'white', marginTop: 15 }} numberOfLines={2}>{trackTitle}</Text>
+
+                        <Text style={{ fontSize: 14, fontFamily: 'Poppins', color: 'gray', marginLeft: 10 }} numberOfLines={1}>{trackArtist}</Text>
+
+
+
+
+
+
+
+
+
+                    </ScrollView>}
+
+                <View style={{
+                    position: 'absolute', bottom: 30, flex: 1, width: width <= 600 ? width - 30 : 580 - 30, alignSelf: 'center'
+                }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+
+                    }}>
+                        <TouchableOpacity style={{
+                            flexDirection: 'row'
+
+
+                        }}
+                            onPress={() => {
+                                if (repeter == false) {
+                                    setRepeter(true)
+                                } else {
+                                    setRepeter(false)
+                                }
+                            }}
+
+                        >
+                            <IconMat size={30} name={repeter ? "repeat" : "repeat-off"} color={repeter ? "orange" : color} />
+                            {/* <Text style={{ color: repeter ? "orange" : color, fontSize: 14, marginLeft: 5 }}>Répéter</Text> */}
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+
+                            if (visibility == true) {
+                                setVisibility(false)
+                            } else {
+                                setVisibility(true)
+                            }
+                        }} style={{ textAlign: 'center', alignItems: 'center' }}>
+                            <Icon size={30} name="share-outline" color={mode == "clair" ? "gray" : 'white'} />
+                            {/* <Text style={{ color: mode == "clair" ? "black" : 'white' }}>Chapitres</Text> */}
+                        </TouchableOpacity>
+                        {/* 
+                    <TouchableOpacity style={{
+                    flexDirection: 'row', marginRight: 10
+                     
+                    
+                }} 
+                onPress={()=>{
+
+                }}  
+                
+                >
+                    <IconMat size={25} name="heart-outline" color={repeter?"orange":color} />
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity style={{
+                    flexDirection: 'row', marginRight: 10
+                     
+                    
+                }} 
+                onPress={()=>{
+
+                }}  
+                
+                >
+                    <IconMat size={25} name="heart" color="red" />
+                    </TouchableOpacity> */}
+
+
+                        {!isExist() ?
+                            <TouchableOpacity
+                                /* onPress={createData} */
+
+                                style={{ marginRight: 20 }}>
+                                <IconMat name="heart-outline" size={30} color={color} />
+
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity
+                                onPress={removeData}
+
+                                style={{ marginRight: 20 }}>
+                                <Icon name="heart" size={30} color="red" />
+                            </TouchableOpacity>}
+                    </View>
+                    <Slider
+                        style={[styles.progressBar, { height: 20 }]}
+                        thumbTintColor={mode == "clair" ? "black" : 'white'}
+                        minimumTrackTintColor="blue"
+                        maximumTrackTintColor="#bbb"
+                        minimumValue={0}
+                        value={progress.position}
+                        maximumValue={progress.duration}
+                        onSlidingComplete={async value => {
+
+                            await TrackPlayer.seekTo(value);
+
+
+                        }}
 
                     />
-                  </TouchableOpacity>:
-                    <ActivityIndicator size={_ICON_SIZE} color="black" />
-                    }
 
-                
-                <TouchableOpacity  onPress={()=>{dispatch(setPlayer(false))}} style={{marginRight:10}}>
-                  <Ionicons name="close-sharp" size={_ICON_SIZE} color="black" />
+                    <View style={{
+                        width: "100%", flexDirection: 'row', alignSelf: 'center',
+                        color: 'black', justifyContent: 'space-between', marginBottom: 0, paddingLeft: 15, paddingRight: 15
+                    }} >
+                        <Text style={{ color: mode == "clair" ? "black" : 'white' }}>
 
-                </TouchableOpacity>
-                
-  
-                {/* <TouchableOpacity  onPress={()=>{setMinimize(false)}}>
-                  <Ionicons name="chevron-up" size={_ICON_SIZE} color="black" />
-                </TouchableOpacity> */}
+                            {new Date(progress.position * 1000).toLocaleTimeString('en-US', { hour12: false, hourCycle: 'h23' }).substring(3)}
+                        </Text>
 
-                
-              </View>
-            </View>
-          :
-          
-
-          <SafeAreaView style={styles.container}>
-          <StatusBar
-              backgroundColor="#222831"
-              barStyle="dark-content"
-          /> 
-          <TouchableOpacity onPress={()=>{setMinimize(true)}} style={{marginLeft:20,position:"absolute",top:10}}>
-            <Ionicons name="chevron-down-outline" size={30} color="#ffff" />
-          </TouchableOpacity>     
-          <View style={styles.mainContainer}>
+                        <Text style={{ color: mode == "clair" ? "black" : 'white' }}>
+                            {new Date((progress.duration - progress.position) * 1000).toLocaleTimeString('en-US', { hour12: false, hourCycle: 'h23' }).substring(3)}
+                        </Text>
 
 
-          <View style={styles.mainWrapper}>
-            <View style={[styles.imageWrapper, styles.elevation]}>
-              <Image
-                //   source={item.artwork}
-                source={{uri:"https://maadsene.com/couverture/"+imagePod}}
-                style={styles.musicImage}
-              />
-            </View>
-            <Text style={{fontSize:18,color:'#FFFF',fontWeight:'700'}}>episode {episode}</Text>
-          </View>
-          
-          <View>
-            <Slider
-              style={styles.progressBar}
-              value={progress.position}
-              minimumValue={0}
-              maximumValue={progress.duration}
-              thumbTintColor="#FFD369"
-              minimumTrackTintColor="#FFD369"
-              maximumTrackTintColor="#fff"
-              onSlidingComplete={async value => {
-                await TrackPlayer.seekTo(value);
-              }}
-            />
-  
-            {/* Progress Durations */}
-            <View style={styles.progressLevelDuraiton}>
-              <Text style={styles.progressLabelText}>
-                {new Date(progress.position * 1000)
-                  .toLocaleTimeString()
-                  .substring(3)}
-              </Text>
-              <Text style={styles.progressLabelText}>
-                {new Date((progress.duration - progress.position) * 1000)
-                  .toLocaleTimeString()
-                  .substring(3)}
-              </Text>
-            </View>
-          </View>
-          {/* music control */}
-          <View style={styles.musicControlsContainer}>
-          <TouchableOpacity onPress={()=>{skipToPrevious()}}>
-            <Ionicons name="play-skip-back-outline" size={35} color="#FFD369" />
-          </TouchableOpacity>
-          <TouchableOpacity style={{width:100,height:100,justifyContent:'center',alignContent:'center',alignItems:'center'}} onPress={() => togglePlayBack(playBackState)}>
-            {
+                    </View>
 
-              isLoading?
-                <ActivityIndicator size={75} color="#FFD369"/>
-              
-              :
+                    <View
+                        style={{
+                            width: width <= 600 ? '100%' : 580,
+                            flexDirection: 'row', marginRight: 10, marginTop: 5,
+                            justifyContent: 'space-around', alignSelf: 'center', alignItems: 'center',
+                            borderTopColor: mode == "clair" ? "#eee" : '#242424', paddingTop: 20
+                        }}
+                    >
+                        <TouchableOpacity style={{
+                            flexDirection: 'row'
 
-            
-            <Ionicons
-              name={
-                playBackState === State.Playing
-                  ? 'ios-pause-circle'
-                  : 'ios-play-circle'
-              }
-              size={75}
-              color="#FFD369"
 
-            />
-            }
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{skipToNext()}}>
-            <Ionicons
-              name="play-skip-forward-outline"
-              size={35}
-              color="#FFD369"
-            />
-          </TouchableOpacity>
-        </View>
+                        }}
+                            onPress={() => {
+                                if (repeter == false) {
+                                    setRepeter(true)
+                                } else {
+                                    setRepeter(false)
+                                }
+                            }}
 
-            <View style={{paddingBottom:20}}>
-              {!isLoading?
-              <Text numberOfLines={1} style={[styles.songContent, styles.songTitle]}>
-                {/* {songs[songIndex].title} */ trackTitle}
-              </Text>:<Text numberOfLines={1} style={[styles.songContent, styles.songTitle]}>En cours...</Text>}
-              <Text style={[styles.songContent, styles.songArtist]}>
-                {/* {songs[songIndex].artist} */ trackArtist}
-              </Text>
-            </View>
-          
-            </View>
-        {/* bottom section */}
-  {/*       <View style={style.bottomSection}>
-          <View style={style.bottomIconContainer}>
-            <TouchableOpacity onPress={() => {}}>
-              <Ionicons name="heart-outline" size={30} color="#888888" />
-            </TouchableOpacity>
-  
-            <TouchableOpacity onPress={changeRepeatMode}>
-              <MaterialCommunityIcons
-                name={`${repeatIcon()}`}
-                size={30}
-                color={repeatMode !== 'off' ? '#FFD369' : '#888888'}
-              />
-            </TouchableOpacity>
-  
-            <TouchableOpacity onPress={() => {}}>
-              <Ionicons name="share-outline" size={30} color="#888888" />
-            </TouchableOpacity>
-  
-            <TouchableOpacity onPress={() => {}}>
-              <Ionicons name="ellipsis-horizontal" size={30} color="#888888" />
-            </TouchableOpacity>
-          </View>
-        </View> */}
-  
-  {/*       <AudioPlayer
-          url={'https://lesabeillessolidaires.com/livres_numeriques/'+lien}
-            style={{backgroundColor:'black'}}
-        /> */}
-      </SafeAreaView>
-          
-          }
-    </View>
+                        >
+                            <IconMat size={30} name={repeter ? "repeat" : "repeat-off"} color={repeter ? "orange" : color} />
+                            {/* <Text style={{ color: repeter ? "orange" : color, fontSize: 14, marginLeft: 5 }}>Répéter</Text> */}
+                        </TouchableOpacity>
+                        <View style={{
+                            flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+                        }}>
+
+
+                            <TouchableOpacity  /* disabled={songIndexList ==0?true:false} */
+                                style={{ marginRight: 10, backgroundColor: '#8787879c', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }} onPress={() => { TrackPlayer.seekTo(progress.position - 15); }}>
+                                <IconMat name="rewind-15" size={30}
+                                    color={mode == "clair" ? "black" : 'white'} />
+                            </TouchableOpacity>
+                            {
+
+                                replay == false ?
+
+                                    chargement || loadingPlayer ? <TouchableOpacity style={{ width: 70, height: 70, borderRadius: 50, marginRight: 10, backgroundColor: 'green', justifyContent: 'center' }} onPress={() => {
+
+
+
+                                    }} >
+                                        <ActivityIndicator size={30} color="white" />
+
+                                    </TouchableOpacity> :
+
+                                        <TouchableOpacity
+                                            style={{
+                                                width: 70, flexDirection: 'row', justifyContent: 'center',
+
+                                                alignItems: 'center', height: 70,
+                                                marginRight: 10, backgroundColor: 'green', borderRadius: 50
+                                            }}
+                                            onPress={() => {
+
+                                                playPause(playBackState);
+
+
+                                            }} >
+                                            <Ionicons name={
+                                                playBackState === State.Playing ? "ios-pause" : "ios-play"
+                                            } size={40} color="white" style={{ zIndex: 1000, alignSelf: 'center', marginLeft: 5 }} />
+                                        </TouchableOpacity>
+
+                                    :
+
+                                    <TouchableOpacity onPress={() => {
+
+                                        //playPause(playBackState);
+
+                                    }} >
+                                        <IconMat name="replay" size={60} color="green" />
+
+                                    </TouchableOpacity>
+
+                            }
+
+                            <TouchableOpacity onPress={() => { TrackPlayer.seekTo(progress.position + 15); }} style={{ backgroundColor: '#8787879c', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                <IconMat name="fast-forward-15" size={30} color={mode == "clair" ? "black" : 'white'} />
+
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity onPress={() => {
+
+                            if (visibility == true) {
+                                setVisibility(false)
+                            } else {
+                                setVisibility(true)
+                            }
+                        }} style={{ textAlign: 'center', alignItems: 'center' }}>
+                            <Icon size={30} name="list" color={mode == "clair" ? "gray" : 'white'} />
+                            {/* <Text style={{ color: mode == "clair" ? "black" : 'white' }}>Chapitres</Text> */}
+                        </TouchableOpacity>
+
+
+                    </View>
+
+
+
+
+
+
+
+
+                </View>
+                {chargement || loadingPlayer ?
+                    <Text style={{
+                        position: 'absolute', bottom: 0,
+                        fontFamily: 'Poppins-Italic'
+                        , color: 'gray', alignSelf: 'center'
+                    }}>
+                        En cours de chargement.....
+                    </Text>
+                    : null}
+
+
+                {
+                    visibility ?
+                        <TouchableWithoutFeedback onPress={() => { setVisibility(false) }}>
+                            <View style={{ width: '100%', top: 50, backgroundColor: 'black', opacity: 0.5, height: '100%', position: 'absolute' }}>
+
+                            </View>
+                        </TouchableWithoutFeedback>
+                        :
+                        null
+                }
+
+                {/* Content of the full screen view */}
+            </Animated.View>
+        </PanGestureHandler>
+    )}
+</>
   )
 }
 

@@ -46,6 +46,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import playerSlice from './features/player/playerSlice';
 import moment from 'moment';
 import { Modal } from 'react-native';
+import PlayerAudio from './Screen/PlayerScreen/PlayerAudio';
 
 const reducer = combineReducers({
   userAuth: authSlice,
@@ -210,7 +211,8 @@ const App = () => {
     <NavigationContainer>
      <GestureHandlerRootView style={{ flex: 1 }}>
      {/* <BottomSheetModalProvider> */}
-      {logged ? <MainNavigation /> : <AuthNavigation />}
+      {/* {logged ? <MainNavigation /> : <AuthNavigation />} */}
+      {logged ? <PlayerAudio /> : <AuthNavigation />}
 
 
       {/* </BottomSheetModalProvider> */}
