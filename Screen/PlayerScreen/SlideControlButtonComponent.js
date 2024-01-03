@@ -5,14 +5,42 @@ import { useEffect, useRef, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
-import { useProgress } from 'react-native-track-player';
+import TrackPlayer, { State, usePlaybackState, useProgress } from 'react-native-track-player';
+import { skipToNext, skipToPrevious } from '../../services/player/PlayerService';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToList } from '../../features/favorite/favoriteSlice';
 
-const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, chargement, loadingPlayer, playBackState, State }) => {
+
+const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlayer,currentAudio  }) => {
     const width = Dimensions.get("window").width;
-    const isExist = (book) => {
-        return true; //favorite.find(item => item.id === idsong) !== undefined;
+    //const state = await TrackPlayer.getState();
+
+    const [isLoading,setIsLoading] = React.useState(false);
+    const favorite = useSelector((state) => state.favorite.favorite);
+    
+    const idsong = useSelector((state) => state.audio.idsong);
+    
+    const playBackState = usePlaybackState();
+    const progress = useProgress();
+    const dispatch = useDispatch();
+
+    const isExist = () => {
+        return favorite.find(item => item.id === idsong) !== undefined;
     };
 
+
+    
+    const togglePlayPause = async () => {
+
+        const state = await TrackPlayer.getState();
+        console.log(state);
+        if (state == State.Paused) {
+            await TrackPlayer.play();
+          } else {
+            await TrackPlayer.pause();
+          }
+        
+      };
     return (
         <View style={{
             position: 'absolute', bottom: 30, flex: 1, width: width <= 600 ? width - 30 : 580 - 30, alignSelf: 'center'
@@ -27,13 +55,13 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
 
 
                 }}
-                    onPress={() => {
+/*                     onPress={() => {
                         if (repeter == false) {
                             setRepeter(true)
                         } else {
                             setRepeter(false)
                         }
-                    }}
+                    }} */
 
                 >
                     <IconMat size={30} name={repeter ? "repeat" : "repeat-off"} color={repeter ? "orange" : "white"} />
@@ -50,24 +78,25 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
 
                 {!isExist() ?
                     <TouchableOpacity
-                        /* onPress={createData} */
+                         onPress={()=>{dispatch(addToList(currentAudio)); alert(idsong)}}
 
                         style={{ marginRight: 20 }}>
-                        <IconMat name="heart-outline" size={30} color={color} />
+                        <IconMat name="heart-outline" size={30} color="white" />
 
                     </TouchableOpacity>
                     :
                     <TouchableOpacity
                         //onPress={removeData}
+                        onPress={()=>{dispatch(addToList(item));}}
 
                         style={{ marginRight: 20 }}>
                         <Icon name="heart" size={30} color="red" />
                     </TouchableOpacity>}
             </View>
-            <Slider
+             <Slider
                 style={[styles.progressBar, { height: 20 }]}
                 thumbTintColor='white'
-                minimumTrackTintColor="blue"
+                minimumTrackTintColor="red"
                 maximumTrackTintColor="#bbb"
                 minimumValue={0}
                 value={progress.position}
@@ -79,7 +108,7 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
 
                 }}
 
-            />
+            /> 
 
             <View style={{
                 width: "100%", flexDirection: 'row', alignSelf: 'center',
@@ -95,7 +124,7 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
                 </Text>
 
 
-            </View>
+            </View> 
 
             <View
                 style={{
@@ -106,19 +135,24 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
                 }}
             >
                     <TouchableOpacity  /* disabled={songIndexList ==0?true:false} */
-                        style={{ marginRight: 10, backgroundColor: '#8787879c', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }} onPress={() => { TrackPlayer.seekTo(progress.position - 15); }}>
+                        style={{ marginRight: 10, backgroundColor: '#ffff', padding: 5,marginTop:-15,
+                         borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }} 
+                          onPress={skipToPrevious}>
                         <Icon name="play-skip-back-outline" size={30}
-                            color='white' />
+                            color='black' />
                     </TouchableOpacity>
                 <View style={{
+                    marginTop:20,
                     flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
                 }}>
 
 
                     <TouchableOpacity  /* disabled={songIndexList ==0?true:false} */
-                        style={{ marginRight: 10, backgroundColor: '#8787879c', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }} onPress={() => { TrackPlayer.seekTo(progress.position - 15); }}>
+                        style={{ marginRight: 10, backgroundColor: '#ffff', padding: 5, borderRadius: 50, height: 50,
+                         width: 50, justifyContent: 'center', alignItems: 'center' }}
+                          onPress={() => { TrackPlayer.seekTo(progress.position - 15); }}>
                         <IconMat name="rewind-15" size={30}
-                            color='white' />
+                            color='black' />
                     </TouchableOpacity>
                     {/*      {
 
@@ -142,7 +176,7 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
                         }}
                         onPress={() => {
 
-                            playPause(playBackState);
+                            togglePlayPause();
 
 
                         }} >
@@ -151,7 +185,7 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
                         } size={40} color="green" style={{ zIndex: 1000, alignSelf: 'center', marginLeft: 5 }} />
                     </TouchableOpacity>
 
-                    {/*                         :
+                    {/*      :
 
                         <TouchableOpacity onPress={() => {
 
@@ -164,13 +198,13 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
 
                 } */}
 
-                    <TouchableOpacity onPress={() => { TrackPlayer.seekTo(progress.position + 15); }} style={{ backgroundColor: '#8787879c', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <IconMat name="fast-forward-15" size={30} color="white"/>
+                    <TouchableOpacity onPress={() => { TrackPlayer.seekTo(progress.position + 15); }} style={{ backgroundColor: '#ffff', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                        <IconMat name="fast-forward-15" size={30} color="black"/>
 
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => { TrackPlayer.seekTo(progress.position + 15); }} style={{ backgroundColor: '#8787879c', padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        <Icon name="play-skip-forward-outline" size={30} color="white" />
+                <TouchableOpacity onPress={skipToNext}  style={{ backgroundColor: '#ffff', marginTop:-15,padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                        <Icon name="play-skip-forward-outline" size={30} color="black" />
 
                     </TouchableOpacity>
 
@@ -190,4 +224,23 @@ const SlideControlButtonComponent = ({ repeter, progress, TrackPlayer, replay, c
 
 export default SlideControlButtonComponent
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+  
+    progressBar: {
+      width: 350,
+      height: 40,
+      marginTop: 25,
+      flexDirection: 'row',
+    },
+    progressLevelDuraiton: {
+      width: 340,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    progressLabelText: {
+      color: '#FFF',
+    },
+  
+  
+  });

@@ -153,15 +153,19 @@ const MainScreen = ({ navigation }) => {
           screenOptions={{
             tabBarScrollEnabled: true,
             tabBarIndicatorStyle: {
-              backgroundColor: '#60103b',
-              height: 4,
+              backgroundColor: '#ffff',
+              height: 5,
+
               
 
             },
-            tabBarActiveTintColor: '#60103b',
-            tabBarInactiveTintColor: 'black',
-            tabBarLabelStyle: { fontSize: 13, color: 'black', fontWeight: "500", letterSpacing: 1 },
-            tabBarItemStyle: { width: 'auto', padding: 0.1 },
+
+            tabBarStyle:{backgroundColor:'#60103b'},
+
+            tabBarActiveTintColor: '#ffd984',
+            tabBarInactiveTintColor: 'white',
+            tabBarLabelStyle: { fontSize: 13, color: 'white', fontWeight: "500", letterSpacing: 1 },
+            tabBarItemStyle: { width: 'auto', padding: 0.1,  },
             lazy: true,
             swipeEnabled: false,
             timingConfig: { duration: 0 },
@@ -174,66 +178,55 @@ const MainScreen = ({ navigation }) => {
         >
           <Tab.Screen name="Tous" initial component={Home}
 
-
+            
             options={{
+              tabBarPressColor:'#ffff',
+              
               tabBarIndicatorStyle: {
                 backgroundColor: '#60103b',
                 height: 4,
               },
-              tabBarLabelStyle: { padding: 10, fontSize: 13, color: 'black', fontWeight: "500", letterSpacing: 1 }
+              
+              tabBarLabelStyle: { padding: 10, fontSize: 13,  fontWeight: "500", letterSpacing: 1, }
 
 
             }} />
           <Tab.Screen name="Livres" component={LivreHome}
 
             options={{
+
               tabBarIndicatorStyle: {
                 backgroundColor: '#60103b',
                 height: 4,
               },
-              tabBarLabelStyle: { padding: 10, fontSize: 13, color: 'black', fontWeight: "500", letterSpacing: 1 }
+              tabBarLabelStyle: { padding: 10, fontSize: 13,  fontWeight: "500", letterSpacing: 1 }
             }} />
           <Tab.Screen name="Livres Audios" component={LivreAudio}
             options={{
               lazy: false,
-              tabBarLabelStyle: { padding: 10, fontSize: 12, color: 'black', fontWeight: "500", letterSpacing: 1 }
+              tabBarLabelStyle: { padding: 10, fontSize: 12,  fontWeight: "500", letterSpacing: 1 }
             }} />
 
           {/* <Tab.Screen name="Magazines" component={MagasineHome} /> */}
           <Tab.Screen name="Podcasts"
             options={{
               lazy: false,
-              tabBarLabelStyle: { padding: 10, fontSize: 13, color: 'black', fontWeight: "500", letterSpacing: 1 }
+              tabBarLabelStyle: { padding: 10, fontSize: 13,  fontWeight: "500", letterSpacing: 1 }
             }}
             component={PodcastHome} />
           <Tab.Screen name="WeART" title="WE ART" component={WeArt}
             options={{
               lazy: false,
-              tabBarLabelStyle: { padding: 10, fontSize: 13, color: 'black', fontWeight: "500", letterSpacing: 1 }
+              tabBarLabelStyle: { padding: 10, fontSize: 13, fontWeight: "500", letterSpacing: 1 }
             }} />
 
           <Tab.Screen name="JollofTech" component={JollofTechHome}
 
             options={{
-              tabBarLabelStyle: { padding: 10, fontSize: 13, color: 'black', fontWeight: "500", letterSpacing: 1 }
+              tabBarLabelStyle: { padding: 10, fontSize: 13,  fontWeight: "500", letterSpacing: 1 }
             }}
           />
 
-          <Tab.Screen name="WebviewCache" component={WebHome}
-            options={{
-              lazy: false,
-              tabBarShowLabel: false,
-              title: "",
-
-              //tabBarStyle:{backgroundColor:'red'},
-
-              tabBarLabelStyle: { padding: 0, margin: 0, width: 0, height: 0 }
-
-              //tabBarItemStyle:{backgroundColor:'red'}
-
-            }}
-          //tabBarItemStyle={{width:100,backgroundColor:'red'}}
-          />
 
           {/*           <Tab.Screen name="Documents" component={DocumentHome} /> */}
         </Tab.Navigator>

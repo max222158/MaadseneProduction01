@@ -46,12 +46,14 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import playerSlice from './features/player/playerSlice';
 import moment from 'moment';
 import { Modal } from 'react-native';
+import SearchSlice from './features/search/SearchSlice';
 
 const reducer = combineReducers({
   userAuth: authSlice,
   favorite: favoriteSlice,
   billing: subscriptionSlice,
-  audio: playerSlice
+  audio: playerSlice,
+  search:SearchSlice
 });
 
 const persistConfig = {
@@ -149,8 +151,8 @@ const App = () => {
 
              //let today = new Date();
              let end_date_subcription  = new Date(data.user.end_date_subcription);
-             let today = new Date(data.today);
-             
+             let today = new Date();
+             //alert(today);
 
 
              if(today < end_date_subcription){

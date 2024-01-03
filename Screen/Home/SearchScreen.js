@@ -7,6 +7,7 @@ import BookItem3 from "../../Component_items/BookItem3";
 import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import fetchWithTimeout from "../../utils/fetchWithTimeOut";
+import { setSearchData } from "../../features/search/SearchSlice";
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,55 +39,16 @@ const SearchScreen = ({ navigation }) => {
   };
 
 
-  const search = async () =>{
-
-      //let userToken = userData.token;
-      setError(false);
-      setIsLoading(true);
-      let url = 'https://www.maadsene.com/api/auth/allBooksSearch';
-
-      try {
-
-        await fetchWithTimeout(url,{ 
-          method: "GET",
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            // "Content-Type": "application/json",
-            //Authorization: "Bearer " + userDataSelect.token,
-          },
-          
-          timeout:15000
-          
-        })
-          .then(response => response.json())
-          .then(data => {
-
-            setDataFromUrl(data);
-            setIsLoading(false);
-
-            //console.log("DATA search-----", data.search);
-
-            //alert(data);
-          });
-      } catch (e) {
-        if (e == "SyntaxError: JSON Parse error: Unrecognized token '<'") {
-          //alert("dial" + e);
-          //actions.logout();
-        }
-        setIsLoading(false);
-        setError(true);
-
-      }
-
-
-  }
 
   React.useEffect(() => {
 
-    search();
+    //search();
+    setTimeout(()=>{
 
+      setIsLoading(false);
+    },1500)
 
-  }, [])
+  }, []);
 
   React.useEffect(() => {
 
@@ -183,19 +145,17 @@ const SearchScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ paddingLeft: 15, paddindRight: 10, backgroundColor: 'white', flex: 1,paddingBottom:20 }}>
 
-    <View style={styles.inputContainer1}>
+    <TouchableOpacity style={styles.inputContainer1} onPress={()=>{navigation.navigate('search_page'); dispatch(setSearchData([]))}}>
       <Ionicons name="ios-search-outline" size={24} color="#999" />
-      <TextInput
+      <Text
         style={styles.input1}
-        placeholder="Recherche"
-        placeholderTextColor="#999"
-        onChangeText={(value) => searchFilterFunction(value)}
-        onClear={(value) => searchFilterFunction('')}
-      />
+        
+      >Taper ici un mot clé</Text>
+
       <TouchableOpacity style={[styles.searchBtn,{borderLeftWidth:1,borderColor:'gray',paddingLeft:5}]}>
-        <Text style={[styles.searchBtnText,{color:'red'}]}>Recherche</Text>
+        
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
       {
 
         focus ?
@@ -530,7 +490,10 @@ inputContainer1: {
   marginVertical: 5,
   marginRight:10,
   paddingRight:10,
-  paddingLeft:10
+  paddingLeft:10,
+  marginTop:50,
+  paddingBottom:5,
+  paddingTop:5
 },
 input1: {
   flex: 1,

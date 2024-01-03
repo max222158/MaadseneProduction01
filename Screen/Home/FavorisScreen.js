@@ -150,28 +150,13 @@ const FavorisScreen = ({ navigation }) => {
 
 
                   navigation.navigate('DetailsPodcast', {
-                    id: item.id,
-                    auteur: item.artist,
-                    image: item.image,
-                    titre: item.title,
-                    categorie: item.categorie,
-                    resume: item.description,
-                    book: item.lien,
-                    support: item.support,
-                    name: item.name,
-                    episode: item.episode
+                    item:item
                   });
                 }
                 if (item.support == "Livre") {
 
                   navigation.navigate('DetailsBook', {
-                    id: item.id,
-                    auteur: item.auteur,
-                    image: item.image,
-                    titre: item.titre,
-                    categorie: item.categorie,
-                    resume: item.resume,
-                    book:  item.epub,
+                    item:item
 
 
                   });
@@ -181,14 +166,7 @@ const FavorisScreen = ({ navigation }) => {
                 if (item.support == "Livre audio") {
 
                   navigation.navigate('DetailsBookAudio', {
-                    id: item.id,
-                    auteur: item.auteur,
-                    image: item.image,
-                    titre: item.titre,
-                    categorie: item.categorie,
-                    resume: item.description,
-                    url: item.lien_livre,
-                    support: item.support,
+                    item:item
                   });
 
 

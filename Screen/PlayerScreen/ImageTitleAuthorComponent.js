@@ -6,7 +6,7 @@ const ImageTitleAuthorComponent = ({ imageSource, title, author,loadingPlayer })
     const dim300 = 200;
   return (
     <ScrollView style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}>
-    {
+     {
         !loadingPlayer ?
             <View style={{ width: dim300, height: dim300, marginTop: 30, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', borderRadius: 0, backgroundColor: '#0a3774' }}>
 
@@ -21,7 +21,7 @@ const ImageTitleAuthorComponent = ({ imageSource, title, author,loadingPlayer })
 
                 <Icon name="ios-musical-notes-outline" style={{ position: 'absolute' }} color="white" size={90} />
             </View>
-    }
+    } 
 
 
     <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold', color:  'white', marginTop: 15,textAlign:'center' }} numberOfLines={2}>{title}</Text>

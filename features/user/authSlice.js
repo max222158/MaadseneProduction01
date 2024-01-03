@@ -67,8 +67,9 @@ export const signIn = createAsyncThunk(
         if (data.credential == "valide") {
 
           //return console.log("00000000000000000000000");
-          let today = new Date(data.today);
+          let today = new Date();
           let end_date_subcription  = new Date(data.user.end_date_subcription);
+          
 
           if(today < end_date_subcription){
 

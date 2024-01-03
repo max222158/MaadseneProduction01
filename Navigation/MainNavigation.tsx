@@ -10,9 +10,9 @@ import ReadBookScreen from '../Components/ReadBook/ReadBookScreen';
 import Reader from '../src/screens/Reader/index'
 import { ReadSoundComponent } from '../Components/ReadSound/ReadSoundComponent';
 import { ReadVideoScreen } from '../Components/ReadVideo/ReadVideoScreen';
-import { SafeAreaView,  Button, Text, TouchableOpacity, View, ScrollView, StatusBar,Dimensions, FlatList, Pressable, StyleSheet, ImageBackground, ActivityIndicator, Modal, Linking } from 'react-native';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {ViewPropTypes} from 'deprecated-react-native-prop-types';
+import { SafeAreaView, Button, Text, TouchableOpacity, View, ScrollView, StatusBar, Dimensions, FlatList, Pressable, StyleSheet, ImageBackground, ActivityIndicator, Modal, Linking } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 import Subcription from '../Screen/Home/Subcription';
 import { ReadBookAudio } from '../Components/ReadBookAudio/ReadBookAudio';
 import KaduScreen from '../MenuTopBar/JollofTech/kaduScreen';
@@ -26,27 +26,30 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { ReadVideoCinema } from '../Components/ReadVideo/ReadVideoCinema';
 import CarrouselArt from '../MenuTopBar/weart/CarrouselArt';
+import PodcastDetailsScreen from '../Screen/Details/PodcastDetailsScreen';
+import PlayerAudio from '../Screen/PlayerScreen/PlayerAudio';
+import Search from '../Screen/Search/Search';
 
 
 
 const Stack = createNativeStackNavigator();
 const screenHeight = Dimensions.get('screen').height;
 const windowHeight = Dimensions.get('window').height;
-const navbarHeight = screenHeight - (windowHeight+StatusBar.currentHeight);
+const navbarHeight = screenHeight - (windowHeight + StatusBar.currentHeight);
 const MainNavigation = () => {
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
-  const stateAudio = useSelector(state=>state.audio.miniplayer);
+  const stateAudio = useSelector(state => state.audio.miniplayer);
   const isUpdate = useSelector(state => state.userAuth.isUpdate);
   //alert("---------------"+JSON.stringify(stateAudio));
   // variables
-  const snapPoints =  ['70%'];
-  const [isVisible,setIsVisible] = React.useState(true);
-  React.useEffect(()=>{
+  const snapPoints = ['70%'];
+  const [isVisible, setIsVisible] = React.useState(true);
+  React.useEffect(() => {
 
     bottomSheetModalRef.current?.present();
 
 
-  },[]);
+  }, []);
 
   return (
 
@@ -55,8 +58,9 @@ const MainNavigation = () => {
       <SafeAreaView style={{ flex: 1 }}>
 
         <StatusBar backgroundColor="white" barStyle='dark-content' />
-{/*         {stateAudio?
+        {/*         {stateAudio?
         <PlayerScreen marginB={navbarHeight}/>:null} */}
+        <PlayerAudio />
         <Stack.Navigator>
 
           <Stack.Screen
@@ -75,7 +79,7 @@ const MainNavigation = () => {
 
 
           />
-{/*           <Stack.Screen name="DetailsPodcast" options={{
+          {/*           <Stack.Screen name="DetailsPodcast" options={{
             title: "Podcast",
 
             headerStyle: {
@@ -89,7 +93,7 @@ const MainNavigation = () => {
           <Stack.Screen
             name="ReadBook"
             options={{
-              lazy:false,
+              lazy: false,
               title: '',
               headerStyle: {
                 backgroundColor: '#ffff'
@@ -98,7 +102,7 @@ const MainNavigation = () => {
               headerShown: false
             }}
             component={Reader}
-            
+
           />
           <Stack.Screen
             name="ReadSound"
@@ -132,9 +136,9 @@ const MainNavigation = () => {
               title: '',
               headerStyle: {
                 backgroundColor: 'black',
-                
 
-                
+
+
               },
 
               headerShadowVisible: false,
@@ -148,9 +152,9 @@ const MainNavigation = () => {
               title: '',
               headerStyle: {
                 backgroundColor: 'black',
-                
 
-                
+
+
               },
 
               headerShadowVisible: false,
@@ -163,7 +167,7 @@ const MainNavigation = () => {
             options={{
               title: 'Abonnement',
               headerStyle: {
-              
+
               },
 
             }}
@@ -174,7 +178,7 @@ const MainNavigation = () => {
             options={{
               title: 'Kadu',
               headerStyle: {
-              
+
               },
 
             }}
@@ -185,7 +189,7 @@ const MainNavigation = () => {
             options={{
               title: 'Cinéma',
               headerStyle: {
-              
+
               },
 
             }}
@@ -197,7 +201,7 @@ const MainNavigation = () => {
             options={{
               title: 'Détails',
               headerStyle: {
-              
+
               },
               headerShadowVisible: false,
               headerShown: false
@@ -211,7 +215,7 @@ const MainNavigation = () => {
             options={{
               title: 'Images',
               headerStyle: {
-              
+
               },
               headerShadowVisible: false,
               headerShown: false
@@ -221,34 +225,66 @@ const MainNavigation = () => {
             component={CarrouselArt}
           />
 
+          <Stack.Screen
+            name="detailsPodcast"
+            options={{
+
+              headerStyle: {
+
+              },
+              headerShadowVisible: false,
+              headerShown: false
+
+
+            }}
+            component={PodcastDetailsScreen}
+          />
+
+          <Stack.Screen
+            name="search_page"
+            options={{
+              title:"Recherche",
+
+              headerStyle: {
+                
+
+              },
+              /*               headerShadowVisible: false,
+                            headerShown: false */
+
+
+            }}
+            component={Search}
+          />
+
         </Stack.Navigator>
         <Modal visible={isUpdate} transparent={true} >
 
-          <View style={{flex:1,justifyContent:'center',backgroundColor:'#00000059'}}>
-            <View style={{width:300,backgroundColor:'#ffff',alignSelf:'center',borderRadius:10,alignItems:'center'}}>
-              <View style={{backgroundColor:'#2584ff',width:'100%',borderTopEndRadius:10,borderTopLeftRadius:10,alignItems:'center',paddingBottom:10}}>
-                <Text style={{marginTop:15,color:'white',fontSize:19,fontWeight:'600'}}>Nouvelle mise à jour</Text>
+          <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#00000059' }}>
+            <View style={{ width: 300, backgroundColor: '#ffff', alignSelf: 'center', borderRadius: 10, alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#2584ff', width: '100%', borderTopEndRadius: 10, borderTopLeftRadius: 10, alignItems: 'center', paddingBottom: 10 }}>
+                <Text style={{ marginTop: 15, color: 'white', fontSize: 19, fontWeight: '600' }}>Nouvelle mise à jour</Text>
               </View>
-              <Text style={{marginTop:15,marginBottom:10,color:'#2d3136',fontSize:17,padding:20,letterSpacing:1.5}}>Une nouvelle version de MAADSENE est disponible dans playstore</Text>
+              <Text style={{ marginTop: 15, marginBottom: 10, color: '#2d3136', fontSize: 17, padding: 20, letterSpacing: 1.5 }}>Une nouvelle version de MAADSENE est disponible dans playstore</Text>
 
-              <TouchableOpacity onPress={()=>{
+              <TouchableOpacity onPress={() => {
 
                 const GOOGLE_PACKAGE_NAME = 'com.maadseneapp';
 
                 Linking.openURL(`market://details?id=${GOOGLE_PACKAGE_NAME}`);
 
 
-              }}   style={{padding:10,backgroundColor:'#2584ff',borderRadius:30,paddingLeft:30,paddingRight:30,marginBottom:30}}>
+              }} style={{ padding: 10, backgroundColor: '#2584ff', borderRadius: 30, paddingLeft: 30, paddingRight: 30, marginBottom: 30 }}>
 
-                <Text style={{color:'#ffff',fontSize:18}}>Télécharger</Text>
+                <Text style={{ color: '#ffff', fontSize: 18 }}>Télécharger</Text>
               </TouchableOpacity>
 
             </View>
 
-            
+
           </View>
 
-          
+
         </Modal>
       </SafeAreaView>
     </SafeAreaProvider>

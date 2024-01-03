@@ -34,7 +34,7 @@ const NewsComponent = () => {
     if(isLoading){
 
         return (
-            <ScrollView horizontal={true} style={styles.scroll} >
+            <ScrollView horizontal={true} style={styles.scroll} showsHorizontalScrollIndicator={false}>
             {dataloader.map((news, index) => (
                         <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
                         <View  style={{ width: 120, height: 160, borderRadius: 10, marginTop: 0,backgroundColor:'#007bff1c' }}></View>
@@ -72,16 +72,7 @@ const NewsComponent = () => {
                         }
                         if(news.support === "Livre audio"){
                             navigation.navigate( 'DetailsBookAudio', {
-                                id: news.id,
-                                auteur: news.auteur,
-                                image: news.image,
-                                uri:news.uri,
-                                titre: news.titre,
-                                categorie: news.categorie,
-                                resume: news.resume,
-                                url: news.lien_livre,
-                                support: news.support,
-                              });
+                               item:item});
                         }
 
                     }}>

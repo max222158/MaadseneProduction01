@@ -138,15 +138,7 @@ export default function CategoryScreen({route, navigation}) {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate( 'DetailsBook', {
-                      id: item.id,
-                      auteur: item.auteur,
-                      image: item.image,
-                      titre: item.titre,
-                      categorie: item.categorie,
-                      resume: item.resume,
-                      book: item.epub_mobile,
-                      epub: item.epub_mobile,
-                      support: item.support,
+                      item:item
                     });
 
 
@@ -176,17 +168,7 @@ export default function CategoryScreen({route, navigation}) {
 
               {isExist(item) ?
                   <TouchableOpacity style={{paddingLeft: 10, paddingTop: 5}}
-                    onPress={() => onTapRemoveTolist({
-                      id: item.id,
-                      auteur: item.auteur,
-                      image: item.image,
-                      titre: item.titre,
-                      categorie: item.categorie,
-                      resume: item.resume,
-                      book: item.epub_mobile,
-                      epub: item.epub_mobile,
-                      support: item.support,
-                    })}
+                    onPress={() => onTapRemoveTolist(item)}
                   >
                     <Ionicons
                       name="ios-bookmark"
@@ -196,17 +178,7 @@ export default function CategoryScreen({route, navigation}) {
                     
                   </TouchableOpacity>:
                   <TouchableOpacity style={{paddingLeft: 10, paddingTop: 5}} 
-                    onPress={() => onTapAddTolist({
-                      id: item.id,
-                      auteur: item.auteur,
-                      image: item.image,
-                      titre: item.titre,
-                      categorie: item.categorie,
-                      resume: item.resume,
-                      book: item.epub_mobile,
-                      epub: item.epub_mobile,
-                      support: item.support,
-                    })}
+                    onPress={() => onTapAddTolist(item)}
                   >
                   <Ionicons
                     name="ios-bookmark-outline"

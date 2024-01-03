@@ -85,7 +85,8 @@ const onTapRemoveTolist = (movie) => {
                   fontSize: 19,
                   color: 'black',
                   paddingLeft: 13,
-                  fontWeight: "500",letterSpacing: 1
+                  fontWeight: "500",letterSpacing: 1,
+                  fontFamily:'Poppins-Bold'
                 }}>
                 Livres
               </Text>
@@ -98,20 +99,14 @@ const onTapRemoveTolist = (movie) => {
 
             <FlatList
               data={books}
+              showsHorizontalScrollIndicator={false}
               keyExtractor={item => item.id.toString()}
               renderItem={({item}) => (
                 <View>
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('DetailsBook', {
-                        id: item.id,
-                        auteur: item.auteur,
-                        image: item.image,
-                        titre: item.titre,
-                        categorie: item.categorie,
-                        resume: item.resume,
-                        book: item.epub,
-                        support: item.support,
+                          item:item
                       });
                     }}>
                     <BookItem3 item={item} />

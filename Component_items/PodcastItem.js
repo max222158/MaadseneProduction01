@@ -14,22 +14,20 @@ const height = Dimensions.get('window').height;
 export function PodcastItem({item}) {
 
         return (
-            <View style={{width: windowWidth/2-20,marginLeft:10,marginRight:10}}>
-            <View style={{  height:height/4, borderWidth: 0.5, borderColor: '#dddddd',borderRadius: 20,backgroundColor: '#eef4f8' }}>
-              
-                    
-                    <ImageBackground source={{uri:"https://maadsene.com/couverture/"+item.image}} resizeMode="cover" imageStyle={{ borderRadius: 10}} style={{ flex: 1,borderRadius:20 }}>
-                        <View style={{backgroundColor:"white",width:35,height:35,padding:5,justifyContent:"center",alignItems:"center",borderRadius:50,margin:7}}>
-                            <Ionicons name="md-volume-high" size={18} color="black" />
-                        </View>
-                    </ImageBackground>
+            <View style={styles.mainView}>
+            {/* Première vue superposée */}
+            <View style={styles.overlayView}></View>
+            {/* Deuxième vue superposée */}
+            <View style={styles.overlayView}></View>
+            <View style={{height:200}}>
 
+            <ImageBackground source={{uri:"https://maadsene.com/couverture/"+item.image}} resizeMode="cover" 
+            imageStyle={{ borderRadius: 10}} style={{ flex: 1,borderRadius:20 }}>
+                    </ImageBackground>
             </View>
-                <View style={{ flex: 1, paddingTop: 10,width: 160 }}>
-                    <Text numberOfLines={1} style={styles.text1}>{item.title}</Text>
-                    <Text numberOfLines={1} style={styles.text2}>{item.artist}</Text>
-                </View>
-            </View>
+            <Text numberOfLines={1} style={styles.text1}>{item.title}</Text>
+                        <Text numberOfLines={1} style={styles.text2}>{item.artist}</Text>
+          </View>
         );
    
 }

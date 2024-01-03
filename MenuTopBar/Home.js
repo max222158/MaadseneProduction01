@@ -203,6 +203,7 @@ const Home = ({ navigation }) => {
                   fontSize: 16,
                   color: 'black',
                   paddingLeft: 13,
+                  fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Nouveautés
@@ -224,6 +225,7 @@ const Home = ({ navigation }) => {
                   fontSize: 16,
                   color: 'black',
                   paddingLeft: 13,
+                  fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Sélectionnés pour vous
@@ -240,6 +242,7 @@ const Home = ({ navigation }) => {
               !isLoading ?
 
                 <FlatList
+                showsHorizontalScrollIndicator={false}
                   data={books}
                   keyExtractor={item => item.id.toString()}
                   renderItem={({ item }) => (
@@ -247,31 +250,17 @@ const Home = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() => {
                           navigation.navigate('DetailsBook', {
-                            id: item.id,
-                            auteur: item.auteur,
-                            image: item.image,
-                            titre: item.titre,
-                            categorie: item.categorie,
-                            resume: item.resume,
-                            book: item.epub,
-                            support: item.support,
+                            item:item
+                            
                           });
                         }}>
                         <BookItem3 item={item} />
                       </TouchableOpacity>
                       {isExist(item) ?
                         <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
-                          onPress={() => onTapRemoveTolist({
-                            id: item.id,
-                            auteur: item.auteur,
-                            image: item.image,
-                            titre: item.titre,
-                            categorie: item.categorie,
-                            resume: item.resume,
-                            book: item.epub,
-                            epub: item.epub,
-                            support: item.support,
-                          })}
+                          onPress={() => onTapRemoveTolist(
+                            item
+                          )}
                         >
                           <Ionicons
                             name="ios-bookmark"
@@ -281,17 +270,9 @@ const Home = ({ navigation }) => {
 
                         </TouchableOpacity> :
                         <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
-                          onPress={() => onTapAddTolist({
-                            id: item.id,
-                            auteur: item.auteur,
-                            image: item.image,
-                            titre: item.titre,
-                            categorie: item.categorie,
-                            resume: item.resume,
-                            book: item.epub,
-                            epub: item.epub,
-                            support: item.support,
-                          })}
+                          onPress={() => onTapAddTolist(
+                            item
+                          )}
                         >
                           <Ionicons
                             name="ios-bookmark-outline"
@@ -306,11 +287,12 @@ const Home = ({ navigation }) => {
                   horizontal
 
                 /> :
-                <ScrollView horizontal={true}  >
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                   {dataloader.map((news, index) => (
                     <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
-                      <View style={{ width: 130, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
-
+                      <View style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
                     </View>
 
                   ))}
@@ -329,6 +311,7 @@ const Home = ({ navigation }) => {
                   fontSize: 16,
                   color: 'black',
                   paddingLeft: 13,
+                  fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Podcasts recommandés
@@ -343,23 +326,15 @@ const Home = ({ navigation }) => {
               !isLoading?
             
             <FlatList
+            showsHorizontalScrollIndicator={false}
               data={podcast}
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <View>
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate('DetailsPodcast', {
-                        id: item.id,
-                        auteur: item.artist,
-                        image: item.image,
-                        titre: item.title,
-                        categorie: item.categorie,
-                        resume: item.description,
-                        book: item.lien,
-                        support: item.support,
-                        name: item.name,
-                        episode: item.episode
+                      navigation.navigate('detailsPodcast', {
+                        item:item
                       });
                     }}>
                     <BookItemAudio item={item} />
@@ -389,11 +364,13 @@ const Home = ({ navigation }) => {
               )}
               horizontal
             />:
-            <ScrollView horizontal={true}  >
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}  >
             {dataloader.map((news, index) => (
               <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
-                <View style={{ width: 130, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
-
+                <View style={{ width: 150, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
+                <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                   
               </View>
 
             ))}
@@ -409,6 +386,8 @@ const Home = ({ navigation }) => {
                   fontSize: 16,
                   color: 'black',
                   paddingLeft: 13,
+                  
+                  fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Vidéos{' '}
@@ -422,6 +401,7 @@ const Home = ({ navigation }) => {
             
             {!isLoading?<FlatList
               data={booksVideo}
+              showsHorizontalScrollIndicator={false}
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <View>
@@ -467,7 +447,7 @@ const Home = ({ navigation }) => {
               )}
               horizontal
             />:
-            <ScrollView horizontal={true}  >
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
             {dataloader.map((news, index) => (
               <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
                 <View style={{ width: 130, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
@@ -498,7 +478,7 @@ const Home = ({ navigation }) => {
             </View>
           </View>
           <View style={{ marginTop: 20, marginBottom: 30 }}>
-            <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} >
+            <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} showsHorizontalScrollIndicator={false} >
 
               {category.map((category, index) => (
                 <TouchableOpacity key={index}

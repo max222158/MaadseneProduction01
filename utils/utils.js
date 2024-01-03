@@ -3,6 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import saveUser from '../features/user/authSlice'
 
+export const URL_BASE = "https://maadsenemobi.com/api/";
+
 export function setItem(key, data) {
 	data = JSON.stringify(data);
 	return AsyncStorage.setItem(key, data);

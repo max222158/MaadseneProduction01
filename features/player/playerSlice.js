@@ -4,33 +4,12 @@ const initialState = {
   miniplayer:false,
   image:'',
   minimize:true,
-  idsong:0
+  idsong:0,
+  artist:'',
+  color:'#bbb'
 
 }
 
-
-
-
-
-/* export const saveRegistration = createAsyncThunk(
-    //action type string
-    'saveRegister',
-    // callback function
-  
-    async (thunkAPI,value) => {
-
-        //thunkAPI.dispatch(setRegistration(value));
-        console.log("value************",value);
-/       AsyncStorage.setItem('userRegistration',value );
-
-        thunkAPI.dispatch(setRegistration(value)); 
-        
-
-
-    }
-
-
-); */
 
 
 export const playerSlice = createSlice({
@@ -56,11 +35,28 @@ export const playerSlice = createSlice({
         
       },
 
+      setColor: (state, action) => {
+
+      
+        state.color = action.payload;  
+  
+  
+        
+      },
+
 
       setImage: (state, action) => {
 
       
         state.image = action.payload;  
+  
+  
+        
+      },
+      setArtist: (state, action) => {
+
+      
+        state.artist = action.payload;  
   
   
         
@@ -94,6 +90,6 @@ export const playerSlice = createSlice({
 
   },
 });
-export const { setAudio,setPlayer,setImage,setMinimized,setIdSong} = playerSlice.actions;
+export const { setAudio,setColor,  setPlayer,setImage,setMinimized,setIdSong,setArtist} = playerSlice.actions;
 export default playerSlice.reducer;
 

@@ -282,7 +282,7 @@ useEffect(()=>{
 },[minimize1]);
   return (
     <>
-    {isVisible && (
+    {/* {!isVisible && ( */}
         <PanGestureHandler onGestureEvent={gestureHandler}>
             <Animated.View
                 style={[
@@ -648,7 +648,7 @@ useEffect(()=>{
                 {/* Content of the full screen view */}
             </Animated.View>
         </PanGestureHandler>
-    )}
+  {/*   )} */}
 </>
   )
 }
