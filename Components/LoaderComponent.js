@@ -1,15 +1,13 @@
 import React from 'react';
 import { View, ActivityIndicator, Modal } from 'react-native';
+import LottieView from 'lottie-react-native';
 
 const LoaderComponent = (props) => {
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={props.loading}
-    >
+
       <View
         style={{
+          flex:1,
           position: 'absolute',
           top: 0,
           left: 0,
@@ -20,9 +18,8 @@ const LoaderComponent = (props) => {
           justifyContent: 'center',
         }}
       >
-        <ActivityIndicator size="large" color="#0000ff" />
+        <LottieView  style={{width:200,height:200,}} source={require('../assets/loading5.json')} autoPlay loop />
       </View>
-    </Modal>
   );
 };
 

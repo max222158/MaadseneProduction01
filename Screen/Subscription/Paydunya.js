@@ -37,7 +37,7 @@ const Paydunya = ({navigation}) => {
 
 
       
-      <WebView source={{ uri: 'https://maadsene.com/abonnement/mobile?idu='+ userDataSelect.user.id}} style={{backgroundColor:'#ffff'}} 
+      <WebView source={{ uri: 'https://maadsene.com/paiement/mobile/api-paytech?iduser='+ userDataSelect.user.id}} style={{backgroundColor:'#ffff'}} 
         onMessage={event => {
           const { data } = event.nativeEvent;
           

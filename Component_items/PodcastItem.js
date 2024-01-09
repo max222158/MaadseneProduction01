@@ -21,7 +21,7 @@ export function PodcastItem({item}) {
             <View style={styles.overlayView}></View>
             <View style={{height:200}}>
 
-            <ImageBackground source={{uri:"https://maadsene.com/couverture/"+item.image}} resizeMode="cover" 
+            <ImageBackground source={{uri:item.image}} resizeMode="cover" 
             imageStyle={{ borderRadius: 10}} style={{ flex: 1,borderRadius:20 }}>
                     </ImageBackground>
             </View>

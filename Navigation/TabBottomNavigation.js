@@ -12,7 +12,11 @@ import PlayerScreen from '../Screen/PlayerScreen/PlayerScreen'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import PodcastDetails from '../Screen/Details/BooksDetails/PodcastDetails';
-import BooksDetailsAudio from '../Screen/Details/BooksDetails/BooksDetailsAudio';
+import LoaderComponent from '../Components/LoaderComponent';
+import VideoScreen from '../Screen/Video/VideoScreen';
+import MiniPlayer from '../Screen/PlayerScreen/MiniPlayer';
+import { DetailsBookAudio } from '../Components/DetailsBookAudio/DetailsBookAudio';
+import BooksAudioDetails from '../Screen/Details/BookAudioDetails';
 
 
 
@@ -20,7 +24,7 @@ import BooksDetailsAudio from '../Screen/Details/BooksDetails/BooksDetailsAudio'
 const Tab = createBottomTabNavigator();
 
 export default function TabBottomNavigation() {
-  const stateAudio = useSelector(state=>state.audio.miniplayer);
+  const stateAudio = useSelector(state=>state.audio.playerOff);
   
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
@@ -29,7 +33,7 @@ export default function TabBottomNavigation() {
   React.useEffect(()=>{
     setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 50);
     
   },[]);
 
@@ -38,10 +42,7 @@ export default function TabBottomNavigation() {
 
     return(
 
-      <View style={{alignContent:'center',justifyContent:'center',flex:1,alignItems:'center',backgroundColor:'white'}}>
-        <ActivityIndicator size={40} color="#691c43"/>
-        <Text>En cours...</Text>
-      </View>
+      <LoaderComponent/>
     );
   } 
   return (
@@ -57,7 +58,7 @@ export default function TabBottomNavigation() {
 
           <>
             {
-              stateAudio?<PlayerScreen/>:null
+              !stateAudio?<MiniPlayer />:null
             }
             <BottomTabBar {...props} />
           </>
@@ -71,7 +72,10 @@ export default function TabBottomNavigation() {
               iconName = focused
                 ? 'home'
                 : 'home-outline';
-            } else if (route.name === 'Recherche') {
+            } else            if
+            (route.name === 'Vidéos') {
+            iconName = focused ? 'film' : 'film-outline';
+          } else if (route.name === 'Recherche') {
               iconName = focused ? 'ios-search-sharp' : 'ios-search-outline';
             } else if (route.name === 'Favoris') {
               iconName = focused ? 'ios-bookmark-sharp' : 'ios-bookmark-outline';
@@ -79,6 +83,8 @@ export default function TabBottomNavigation() {
               (route.name === 'Compte') {
               iconName = focused ? 'person' : 'person-outline';
             }
+
+
 
             // You can return any component that you like here!
 
@@ -109,11 +115,19 @@ export default function TabBottomNavigation() {
           }}
 
         />
+
+        
+<Tab.Screen name="Vidéos" component={VideoScreen}           
+          options={{
+            lazy:false
+          }}
+          />
         <Tab.Screen name="Favoris" component={FavorisScreen}           
           options={{
             lazy:false
           }}
           />
+
         <Tab.Screen name="Compte" component={SettingsScreen} />
         <Tab.Screen
           name="Category"
@@ -154,7 +168,7 @@ export default function TabBottomNavigation() {
               backgroundColor: '#ffff',
             },
             
-          }} component={BooksDetailsAudio}
+          }} component={BooksAudioDetails}
 
 
 

@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import fetchWithTimeout from "../../utils/fetchWithTimeOut";
 import { setSearchData } from "../../features/search/SearchSlice";
+import LoaderComponent from "../../Components/LoaderComponent";
 
 const { width, height } = Dimensions.get('window');
 
@@ -120,11 +121,7 @@ const SearchScreen = ({ navigation }) => {
   if(isLoading){
 
     return(
-
-      <View style={{alignContent:'center',justifyContent:'center',flex:1,alignItems:'center',backgroundColor:'white'}}>
-        <ActivityIndicator size={40} color="#691c43"/>
-        <Text style={{fontSize:25}}>En cours...</Text>
-      </View>
+      <LoaderComponent/>
     );
   }
   if(error)
@@ -227,7 +224,7 @@ const SearchScreen = ({ navigation }) => {
             }}>
 
               <View style={styles.bookContainer}>
-              <Image style={styles.image} source={{ uri: "https://maadsene.com/couverture/" + item.image }} />
+              <Image style={styles.image} source={{ uri:  item.image }} />
               <View style={styles.dataContainer}>
                 <Text numberOfLines={1} style={styles.title}>
                   {item.titre}
@@ -279,7 +276,7 @@ const SearchScreen = ({ navigation }) => {
             }}>
 
               <View style={styles.bookContainer}>
-              <Image style={styles.image} source={{ uri: "https://maadsene.com/couverture/" + item.image }} />
+              <Image style={styles.image} source={{ uri: item.image }} />
               <View style={styles.dataContainer}>
                 <Text numberOfLines={1} style={styles.title}>
                   {item.titre}
@@ -326,7 +323,7 @@ const SearchScreen = ({ navigation }) => {
             >
 
               <View style={styles.bookContainer}>
-              <Image style={styles.image} source={{ uri: "https://maadsene.com/couverture/" + item.image }} />
+              <Image style={styles.image} source={{ uri: item.image }} />
               <View style={styles.dataContainer}>
                 <Text numberOfLines={1} style={styles.title}>
                   {item.title}

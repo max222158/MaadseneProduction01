@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { addToList,removeToList } from '../../features/favorite/favoriteSlice';
 import { useDispatch } from 'react-redux';
 import fetchWithTimeout from '../../utils/fetchWithTimeOut';
+import LoaderComponent from '../../Components/LoaderComponent';
 const windowWidth = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const widthWindow = Dimensions.get('window').width;
@@ -109,10 +110,7 @@ export default function CategoryScreen({route, navigation}) {
 
     return(
 
-      <View style={{alignContent:'center',justifyContent:'center',flex:1,alignItems:'center',backgroundColor:'white'}}>
-        <ActivityIndicator size={40} color="#691c43"/>
-        <Text style={{fontSize:25}}>En cours...</Text>
-      </View>
+      <LoaderComponent/>
     );
   }
 
@@ -148,20 +146,15 @@ export default function CategoryScreen({route, navigation}) {
                     <View>
 
                     <ImageBackground
-                  borderRadius={10}
-                  source={{ uri: 'https://maadsene.com/couverture/' + item.image }}
-                  resizeMode='cover'
-                  style={{ width: imageWidth-5, marginTop: 15,aspectRatio: 1 / 1.5, backgroundColor: '#007bff1c',borderRadius:15 }}
-                >
+                      borderRadius={10}
+                      source={{ uri: item.image }}
+                      resizeMode='cover'
+                      style={{ width: imageWidth-5, marginTop: 15,aspectRatio: 1 / 1.5, backgroundColor: '#007bff1c',borderRadius:15 }}
+                    >
                   {/* <Ionicons name='ios-heart' size={32} color="red" on /> */}
                 
                 </ImageBackground>
-                        <Text numberOfLines={1} style={styles.text1}>
-                          {item.titre}
-                        </Text>
-                        <Text style={styles.text2} numberOfLines={1}>
-                          {item.auteur}
-                        </Text>
+
                     </View>
         
                 </TouchableOpacity>

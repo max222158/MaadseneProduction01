@@ -15,7 +15,7 @@ export function VideoItem({item}) {
             <View style={{  width: 150, marginLeft: 8 ,marginRight:5,backgroundColor: '#eef4f8',borderRadius:15 }}>
                 <View style={{ flex: 2,width: 150,height:150,backgroundColor: '#eef4f8',borderRadius:15 }}>
                     
-                    <ImageBackground source={{uri:"https://maadsene.com/couverture/"+item.image}} resizeMode="cover" imageStyle={{borderRadius:20}} style={{ flex: 1, width: null, height: '100%' }}>
+                    <ImageBackground source={{uri:item.image}} resizeMode="cover" imageStyle={{borderRadius:20}} style={{ flex: 1, width: null, height: '100%' }}>
                         <View style={{backgroundColor:"white",width:35,height:35,padding:5,justifyContent:"center",alignItems:"center",borderRadius:50,marginTop:10,marginLeft:10}}>
                             <Ionicons name="md-play" size={18} color="black"  />
                         </View>

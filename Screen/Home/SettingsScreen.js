@@ -3,22 +3,42 @@ import { Text, TouchableOpacity, View,Image } from 'react-native';
 import { SafeAreaView, StyleSheet,ScrollView } from 'react-native';
 import { text } from 'stream/consumers';
  import { useSelector, useDispatch } from 'react-redux';
-import {logout} from '../../features/user/authSlice';
+import {logout, saveLogged, saveUser} from '../../features/user/authSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { clearUserData } from '../../utils/utils';
 
 export default function SettingsScreen() {
   const navigation = useNavigation(); 
 
   const userDataSelect = useSelector((state)=> state.userAuth.userDetails);
-  //console.log(userDataSelect.user.email);
+  const is_register = useSelector((state) => state.billing.isRegister);
+  console.log(userDataSelect.user);
   const dispatch = useDispatch();
     const disconnect = () => {
      
-           
+      dispatch(saveUser([]));
+      dispatch(saveLogged(false));
+      clearUserData();
             dispatch(logout());
 
     }
+    function calculateDaysDifference(startDate, endDate) {
+      // Convertir les chaînes de date en objets Date
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+    
+      // Calculer la différence en millisecondes
+      const timeDifference = end - start;
+    
+      // Convertir la différence en jours
+      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    
+      // Retourner le résultat arrondi
+      return Math.round(daysDifference);
+    }
+    
+    
 
       return (
           <SafeAreaView style={styles.container}>
@@ -33,8 +53,9 @@ export default function SettingsScreen() {
                 <Text style={[styles.Text, {
                   marginTop:15,
                   marginBottom: 5,
+                  marginRight:60
                 }]}>{userDataSelect.user.name}</Text>
-                <Text style={styles.Text}>{userDataSelect.user.email}</Text>
+                <Text style={styles.Text}>{userDataSelect.user.email}  </Text>
               </View>
             </View>
           </View>
@@ -54,11 +75,12 @@ export default function SettingsScreen() {
             </View>
           </View>
 
-          {/* <View style={styles.infoBoxWrapper,{backgroundColor:"#60103a"}}>
+          <View style={[styles.infoBoxWrapper,{backgroundColor:"#60103a"}]}>
               <View style={styles.infoBox}>
-                <Text style={styles.text_abon}>Abonnement : En cours {userDataSelect.user.subcription}</Text>
+                <Text style={styles.text_abon}>Abonnement: {is_register? " En cours": " Non"} {/* {userDataSelect.user.subcription} */}</Text>
+                {is_register?<Text style={styles.text_abon}>Nombre de jours restants: <Text style={{fontWeight:'bold',fontSize:18}}>{calculateDaysDifference(new Date, userDataSelect.user.end_date_subcription)}</Text></Text>:null}
               </View>
-          </View> */}
+          </View> 
 
           <ScrollView style={styles.menuWrapper}>
           <TouchableOpacity onPress={() => {navigation.navigate('Favoris')}}>
@@ -145,16 +167,18 @@ const styles = StyleSheet.create({
   },
   userInfoSection: {
     paddingHorizontal: 30,
-    marginBottom: 25,
+    marginBottom: 15,
   },
   Text: {
     fontSize: 24,
     fontWeight: 'bold',
+    
   },
   Text: {
     fontSize: 14,
     lineHeight: 14,
     fontWeight: '500',
+    marginRight:60
   },
   row: {
     flexDirection: 'row',
@@ -166,7 +190,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#dddddd',
     borderTopWidth: 1,
     flexDirection: 'row',
-    height: 200,
+    height: 100,
     
   },
   infoBox: {
@@ -230,7 +254,7 @@ const styles = StyleSheet.create({
   },
   text_abon :{
 
-    fontSize:30,
+    fontSize:17,
     color:'white'
 
   }

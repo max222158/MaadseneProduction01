@@ -11,7 +11,23 @@ export function TopBarNavigationSearch() {
 
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+    
+      screenOptions={{
+        tabBarActiveTintColor: '#d7006d',
+        tabBarInactiveTintColor:'#636363',
+        tabBarIndicatorStyle: {
+          backgroundColor: '#d7006d',
+          height: 5,
+
+          
+
+        },
+
+         
+            tabBarLabelStyle: { fontSize: 13,  fontWeight: "500", letterSpacing: 1 },
+      }}
+    >
       <Tab.Screen name="Livres" component={BooksComponent} />
       <Tab.Screen name="Livres Audio" component={BooksAudioComponent} />
       <Tab.Screen name="Podcasts"

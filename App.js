@@ -15,6 +15,7 @@ import {
   clearUserData,
   getDataDBasynStore,
   getLogged,
+  URL_BASE,
 } from './utils/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -43,17 +44,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import subscriptionSlice, { billing, saveRegistration, setRegistration }  from './features/subcription/subscriptionSlice';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import playerSlice from './features/player/playerSlice';
+import playerSlice, { setAudioStart, setPlayerOff } from './features/player/playerSlice';
 import moment from 'moment';
 import { Modal } from 'react-native';
 import SearchSlice from './features/search/SearchSlice';
+import PodcastSlice, { setPodcastStored } from './features/podcast/PodcastSlice';
+import TrackPlayer from 'react-native-track-player';
+import { PodcastService } from './services/api/podcastService';
 
 const reducer = combineReducers({
   userAuth: authSlice,
   favorite: favoriteSlice,
   billing: subscriptionSlice,
   audio: playerSlice,
-  search:SearchSlice
+  search:SearchSlice,
+  podcast:PodcastSlice
 });
 
 const persistConfig = {
@@ -91,7 +96,7 @@ const App = () => {
       //console.log("------dataappdb---------- : ",dataAppDB);
       //dispatch(setRegistration(true)); 
       if (!!userData) {
-       //alert('dail')
+
         //setIsLogged(true);
         dispatch(saveUser(userData));
         dispatch(saveLogged(true));
@@ -99,6 +104,7 @@ const App = () => {
         dispatch(billing());
 
       }
+      await TrackPlayer.setupPlayer();
     })();
   }, []);
 
@@ -169,6 +175,7 @@ const App = () => {
              return data;
            });
        } catch (e) {
+        alert(e);
          if (e == "SyntaxError: JSON Parse error: Unrecognized token '<'") {
    
            //alert(e);
@@ -208,15 +215,32 @@ const App = () => {
 
   }, []);
 
+  React.useEffect(() => {
+
+     dispatch(setAudioStart(false));
+     dispatch(setPlayerOff(true));
+          
+
+         
+    const fetchPodcastLocal = async () => {
+      const data = await  PodcastService.getPodcastToLocal('podcast_local'); // Remplacez 'votreClePodcast' par la clé appropriée
+      //PodcastService.storePodcastToLocal('favorites',[]);
+      //alert(JSON.stringify(data));
+      dispatch(setPodcastStored(data));
+    };
+
+    fetchPodcastLocal();
+  }, []);
+
   return (
     <NavigationContainer>
      <GestureHandlerRootView style={{ flex: 1 }}>
-     {/* <BottomSheetModalProvider> */}
+     <BottomSheetModalProvider> 
       {/* {logged ? <MainNavigation /> : <AuthNavigation />} */}
       {logged ? <MainNavigation /> : <AuthNavigation />}
 
 
-      {/* </BottomSheetModalProvider> */}
+     </BottomSheetModalProvider> 
       </GestureHandlerRootView>
       
     </NavigationContainer>

@@ -374,14 +374,6 @@ const SignUpScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buttonContainer1} onPress={handleLogin}>
-        <View style={styles.iconContainer}>
-          <Ionicons name='logo-facebook' size={22} color='#3B5998' />
-        </View>
-        <View style={styles.buttonTextContainer}>
-          <Text style={styles.buttonText}>Inscription avec Facebook</Text>
-        </View>
-      </TouchableOpacity>
       <View style={styles.hrContainer}>
         <View style={styles.hrLine} />
         <Text style={styles.hrText}>OU</Text>
@@ -494,7 +486,9 @@ const SignUpScreen = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <LoaderComponent loading={isLoading} />
+      {
+        isLoading?<LoaderComponent loading={isLoading} /> : null
+      }
     </ScrollView>
   );
 };

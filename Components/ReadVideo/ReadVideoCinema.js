@@ -36,7 +36,7 @@ export const ReadVideoCinema = ({ navigation: { goBack }, route }) => {
 
             <WebView
                     
-                    source={{ uri: "https://maadsene.com/video-cinema?link="+lien_video}}
+                    source={{ uri: lien_video}}
                     originWhitelist={['*']}
                     allowUniversalAccessFromFileURLs={true}
                     allowFileAccessFromFileURLs={true}

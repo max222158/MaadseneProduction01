@@ -23,10 +23,13 @@ import PodcastItem1 from '../Component_items/Commons/PodcastItem';
 const windowWidth = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
+
 export default function CategoryScreen({ route, navigation }) {
   const userDataSelect = useSelector(state => state.userAuth.userDetails);
   const dispatch = useDispatch();
   const favorite = useSelector((state) => state.favorite.favorite);
+  const podcastStoredLocal = useSelector((state) => state.podcast.podcastStoredLocal);
+
 
   //alert(nom)
   const [item, setItem] = React.useState([]);
@@ -36,6 +39,9 @@ export default function CategoryScreen({ route, navigation }) {
   const [error, setError] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [empty, setEmpty] = React.useState(false);
+  const [dataByCateg, setDataByCateg] = React.useState([]);
+  
+  const [isLoading1, setIsLoading1] = React.useState(true);
   const isExist = (movie) => {
 
     if (favorite.filter(item => item.id === movie.id).length > 0) {
@@ -68,8 +74,20 @@ export default function CategoryScreen({ route, navigation }) {
       const data = await PodcastService.getPodcastOfWeek();
 
       setPodcastOfWeek(data.podcastOfWeek);
-      console.log(data.podcastOfWeek);
+      //console.log(data.podcastOfWeek);
       setIsLoading(false);
+      try{
+        const data1 = await PodcastService.getPodcastByCateg();
+
+        setDataByCateg(data1);
+
+
+      }catch(e){
+        setIsLoading1(false)
+
+      }finally{
+        setIsLoading1(false)
+      }
 
 
     } catch (e) {
@@ -85,65 +103,76 @@ export default function CategoryScreen({ route, navigation }) {
   React.useEffect(() => {
 
     getDataPodcastOfWeek();
+    //alert(JSON.stringify(podcastStoredLocal));
   }, []);
 
-  const renderLoader = () => {
+/*   React.useEffect(() => {
+    console.log("----",podcastStoredLocal)
+  }, [podcastStoredLocal]); */
+  const LineItem = ({ title,  items }) => {
     return (
+        <View style={{ marginTop: 20 }}>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                
+        <Text style={{ fontSize: 20,paddingLeft: 15 , fontFamily: 'Poppins-Bold', color: 'black',paddingTop: 20,paddingBottom:10 }}>{title}</Text>
 
-      <View style={{ flex: 1 }}>
-        {
-          !empty ?
 
-            <TouchableOpacity
-              style={{ textAlign: 'center', padding: 15, flexWrap: 'wrap', alignContent: 'center' }}
-              onPress={() => { getPodcast() }}
+            </View>
 
-            >
+            <FlatList
+                data={items}
+                style={{paddingLeft: 15,height:240 }}
 
-              <Text style={{
-                alignSelf: 'center', backgroundColor: "red", textAlign: 'center',
-                color: "white"
-                , margin: 3, fontSize: 13, borderRadius: 15, padding: 4, paddingLeft: 10, paddingRight: 10
-              }}>Voir plus +</Text>
+                renderItem={({ item, index }) =>
+                <TouchableOpacity onPress = {()=>{navigation.navigate('detailsPodcast',{item:item})}}>
+                <PodcastItem1 item={item} />
+              </TouchableOpacity>
 
-            </TouchableOpacity> : null}
-        {isLoading ?
-          <ActivityIndicator size={20} color="black" /> : null}
-      </View>
+                }
+   
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+            />
+        </View>
     );
-  };
+};
 
-  const loadMoreItem = () => {
 
-    setPage(page + 1);
-  };
 
   return (
-    <ScrollView style={styles.bg}>
+    <ScrollView style={[styles.bg,{ }]}>
+      {
+      Object.keys(podcastStoredLocal  || []).length !=0?
+      <>
+        <Text style={{ fontSize: 20,paddingLeft: 15 , fontFamily: 'Poppins-Bold', color: 'black',paddingTop: 30,paddingBottom:10 }}>Récemments écoutés </Text>
+        <FlatList
+      data={podcastStoredLocal}
+      keyExtractor={(item, index) => index.toString()} // Utilisez une clé unique pour chaque élément
+      renderItem={({item}) =>(
+        <TouchableOpacity onPress = {()=>{navigation.navigate('detailsPodcast',{item:item})}}>
+      <PodcastItem1 item={item} />
+      </TouchableOpacity>
 
-      <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold', color: 'black', padding: 15 }}>Récemments écoutés </Text>
-      <ScrollView showsHorizontalScrollIndicator={false} horizontal style={{ paddingLeft: 10, height: windowWidth / 2 - 20 + 100 }}>
-        <View style={[styles.mainView, {}]}>
-          {/* Première vue superposée */}
-          <View style={styles.overlayView}></View>
-          {/* Deuxième vue superposée */}
-          <View style={styles.overlayView1}></View>
-          {/* troisième vue superposée */}
-          <View style={styles.overlayView2}></View>
-          <View style={{ height: windowWidth / 2 - 20 + 5 }}></View>
-          <Text numberOfLines={1} style={styles.text1}>titre</Text>
-          <Text numberOfLines={1} style={styles.text2}>Auteur</Text>
-        </View>
-      </ScrollView>
+      )
+    
+    }
+    style={{paddingLeft: 15 }}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+
+    />
+      </>:null
+      }
 
 
-      <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold', color: 'black', paddingLeft: 15 }}>Sélection de la semaine </Text>
+      <Text style={{ fontSize: 20,paddingTop: 20, fontFamily: 'Poppins-Bold', color: 'black', paddingLeft: 15,paddingBottom:10 }}>Sélection de la semaine </Text>
 
 
 
 
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 10, height: 250 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 10, height: 240 }}>
 
        {podcastOfWeek.map((item, index) => (
         <TouchableOpacity onPress = {()=>{navigation.navigate('detailsPodcast',{item:item})}}>
@@ -153,51 +182,25 @@ export default function CategoryScreen({ route, navigation }) {
                   ))}
 
       </ScrollView>
-      <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold', color: 'black', paddingLeft: 15 }}>Parlons Entreprenariat! </Text>
+ 
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ height: 250 }}>
-        <View style={styles.mainView}>
-          {/* Première vue superposée */}
-          <View style={styles.overlayView}></View>
-          {/* Deuxième vue superposée */}
-          <View style={styles.overlayView}></View>
-          <View style={{ height: 200 }}></View>
-          <Text numberOfLines={1} style={styles.text1}>{item.title}</Text>
-          <Text numberOfLines={1} style={styles.text2}>{item.artist}</Text>
-        </View>
+      {isLoading1 ?
+                        <ActivityIndicator size={20} color="gray" style={{ marginTop: 20 }} /> :
 
-        <View style={styles.mainView}>
-          {/* Première vue superposée */}
-          <View style={styles.overlayView}></View>
-          {/* Deuxième vue superposée */}
-          <View style={styles.overlayView}></View>
-          <View style={{ height: 200 }}></View>
-          <Text numberOfLines={1} style={styles.text1}>Titre</Text>
-          <Text numberOfLines={1} style={styles.text2}>Auteur</Text>
-        </View>
-        <ScrollView horizontal style={{ height: 250 }}>
-          <View style={styles.mainView}>
-            {/* Première vue superposée */}
-            <View style={styles.overlayView}></View>
-            {/* Deuxième vue superposée */}
-            <View style={styles.overlayView}></View>
-            <View style={{ height: 200 }}></View>
-            <Text numberOfLines={1} style={styles.text1}>{item.title}</Text>
-            <Text numberOfLines={1} style={styles.text2}>{item.artist}</Text>
-          </View>
 
-          <View style={styles.mainView}>
-            {/* Première vue superposée */}
-            <View style={styles.overlayView}></View>
-            {/* Deuxième vue superposée */}
-            <View style={styles.overlayView}></View>
-            <View style={{ height: 200 }}></View>
-            <Text numberOfLines={1} style={styles.text1}>Titre</Text>
-            <Text numberOfLines={1} style={styles.text2}>Auteur</Text>
-          </View>
-        </ScrollView>
-      </ScrollView>
-
+                        dataByCateg.map((item, index) => (
+                            <View key={index.toString()}>
+                                <LineItem
+                                    title={item.title}
+                                    items={item.items}
+                                />
+                            </View>
+                        ))
+                    }      
+      {!isLoading  && !error?
+        <TouchableOpacity style={{marginTop:20,marginBottom:70}} onPress={()=>{navigation.navigate('podcast_category')}}>
+        <Text style={{fontSize:17,textAlign:'center',color:'red',marginBottom:20}}>Voir plus</Text>
+        </TouchableOpacity>:null}
 
     </ScrollView>
   );

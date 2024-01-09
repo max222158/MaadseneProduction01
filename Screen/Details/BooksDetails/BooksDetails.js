@@ -57,8 +57,8 @@ const BooksDetails = ({ navigation, route }) => {
                 <View style={styles.container1} >
                     <View style={{ backgroundColor: "#ffff", width: "100%", height: 100, borderBottomRightRadius: 50, borderBottomLeftRadius: 50 }}></View>
                     <Image
-                        source={{ uri: "https://maadsene.com/couverture/" + item.image }}
-                        resizeMode="contain"
+                        source={{ uri:  item.image }}
+                        resizeMode="cover"
                         style={styles.imageDetails}
                         imageStyle={{ borderWidth: 5, borderColor: "red" }}
 
@@ -108,7 +108,9 @@ const BooksDetails = ({ navigation, route }) => {
             <View style={styles.bottomView} >
 
 
-                {is_register ? <TouchableOpacity
+                {is_register || item.free == 1 ? 
+                
+                item.ready == 1 ? <TouchableOpacity
                     style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
                     onPress={() =>
                         navigation.navigate('ReadBook', { path: item.epub_mobile_new_reader, idbook: item.id, image: item.image })
@@ -118,7 +120,15 @@ const BooksDetails = ({ navigation, route }) => {
 
                     <Text style={{ color: 'white', fontWeight: "bold", fontSize: 17 }} >Lire le livre</Text>
 
-                </TouchableOpacity> :
+                </TouchableOpacity> :<TouchableOpacity
+                    style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
+   
+                >
+
+
+                    <Text style={{ color: 'white', fontWeight: "bold", fontSize: 17 }} >Disponible pour bientôt </Text>
+
+                </TouchableOpacity>  :
                     <TouchableOpacity
                         style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
                         onPress={() => { navigation.navigate('Subscription') }}
@@ -169,7 +179,7 @@ const styles = StyleSheet.create({
     title: { fontSize: 16, fontWeight: 'bold', paddingLeft: 20, paddingTop: 20, marginBottom: 10, letterSpacing: 1, },
     auteur: { fontSize: 14, paddingLeft: 20, letterSpacing: 1, color: 'gray' },
     title_resume: { fontSize: 17, paddingLeft: 20, paddingTop: 40, fontWeight: 'bold', letterSpacing: 1 },
-    resume: { fontSize: 15, padding: 20, paddingBottom: 100, letterSpacing: 1, lineHeight: 30, },
+    resume: { fontSize: 15, padding: 20, paddingBottom: 100, letterSpacing: 1, lineHeight: 30, fontFamily:'Poppins'},
     categorie: { fontSize: 15, padding: 15, paddingLeft: 30, paddingRight: 30,  marginTop: 5, borderRadius: 20, letterSpacing: 1, }
     ,
     MainContainer:

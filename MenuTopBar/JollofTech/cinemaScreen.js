@@ -98,7 +98,7 @@ const CinemaScreen = ({navigation}) => {
                                           
 
                                             <View style={styles.GoProBox1}>
-                                                <ImageBackground source={{uri:"https://maadsene.com/Spectacles/"+item.image}}  resizeMode='cover' style={styles.goProBgImage}>
+                                                <ImageBackground source={{uri:item.image}}  resizeMode='cover' style={styles.goProBgImage}>
                                                 
                                                 
                                                 

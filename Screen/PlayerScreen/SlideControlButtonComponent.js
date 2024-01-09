@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions,ActivityIndicator } from 'react-native'
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +8,9 @@ import Slider from '@react-native-community/slider';
 import TrackPlayer, { State, usePlaybackState, useProgress } from 'react-native-track-player';
 import { skipToNext, skipToPrevious } from '../../services/player/PlayerService';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToList } from '../../features/favorite/favoriteSlice';
+import { addToList, removeToList } from '../../features/favorite/favoriteSlice';
+import { setPausePlay } from '../../features/player/playerSlice';
+
 
 
 const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlayer,currentAudio  }) => {
@@ -18,7 +20,13 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
     const [isLoading,setIsLoading] = React.useState(false);
     const favorite = useSelector((state) => state.favorite.favorite);
     
-    const idsong = useSelector((state) => state.audio.idsong);
+    const idsong = useSelector((state) => state.audio.idPodcast);
+        
+    const itemsave = useSelector((state) => state.audio.itemPodcast);
+    const playpause = useSelector((state) => state.audio.playpause);
+    const playpause1 = useSelector((state) => state.audio.playpause1);
+    const stateAudio = useSelector(state=>state.audio.playerOff);
+  
     
     const playBackState = usePlaybackState();
     const progress = useProgress();
@@ -29,6 +37,38 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
     };
 
 
+    useEffect(()=>{
+
+        if(stateAudio == true){
+            //alert(stateAudio)
+            //dispatch(setPausePlay(0));
+            //dispatch(setPausePlay(0));
+            TrackPlayer.pause();
+            TrackPlayer.stop();
+        }else{
+            //dispatch(setPausePlay(1))
+        }
+
+    },[stateAudio]);
+
+
+    useEffect(()=>{
+
+        if(playBackState.state == "playing"){
+            dispatch(setPausePlay(0));
+        }        
+        if(playBackState.state == "paused"){
+
+            dispatch(setPausePlay(1))
+        }
+
+    },[playBackState.state]);
+
+    useEffect(()=>{
+
+        togglePlayPause();
+
+    },[playpause1]); 
     
     const togglePlayPause = async () => {
 
@@ -50,23 +90,7 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
                 justifyContent: 'space-between',
 
             }}>
-                <TouchableOpacity style={{
-                    flexDirection: 'row'
-
-
-                }}
-/*                     onPress={() => {
-                        if (repeter == false) {
-                            setRepeter(true)
-                        } else {
-                            setRepeter(false)
-                        }
-                    }} */
-
-                >
-                    <IconMat size={30} name={repeter ? "repeat" : "repeat-off"} color={repeter ? "orange" : "white"} />
-                    {/* <Text style={{ color: repeter ? "orange" : color, fontSize: 14, marginLeft: 5 }}>Répéter</Text> */}
-                </TouchableOpacity>
+            
                 <TouchableOpacity onPress={() => {
 
 
@@ -78,7 +102,13 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
 
                 {!isExist() ?
                     <TouchableOpacity
-                         onPress={()=>{dispatch(addToList(currentAudio)); alert(idsong)}}
+                         onPress={()=>{
+                            console.log(itemsave);
+                            dispatch(addToList(itemsave)); 
+                        
+                        }
+                        
+                        }
 
                         style={{ marginRight: 20 }}>
                         <IconMat name="heart-outline" size={30} color="white" />
@@ -87,7 +117,7 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
                     :
                     <TouchableOpacity
                         //onPress={removeData}
-                        onPress={()=>{dispatch(addToList(item));}}
+                        onPress={()=>{dispatch(removeToList(itemsave));}}
 
                         style={{ marginRight: 20 }}>
                         <Icon name="heart" size={30} color="red" />
@@ -180,9 +210,14 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
 
 
                         }} >
+                        {
+                          playBackState.state == "loading" ||     playBackState.state == "buffering" ||  playBackState.state == {} ?
+                          <ActivityIndicator size={30} color="green" />:
+
+                        
                         <Ionicons name={
-                            playBackState === State.Playing ? "ios-pause" : "ios-play"
-                        } size={40} color="green" style={{ zIndex: 1000, alignSelf: 'center', marginLeft: 5 }} />
+                            playBackState.state === "playing" ? "ios-pause" : "ios-play"
+                        } size={40} color="green" style={{ zIndex: 1000, alignSelf: 'center', marginLeft: 5 }} />}
                     </TouchableOpacity>
 
                     {/*      :

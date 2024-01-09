@@ -3,37 +3,73 @@ import React, { useEffect, useState } from 'react'
 import { TopBarNavigationSearch } from '../../Navigation/TopBarNavigationSearch'
 import { SearchService } from '../../services/api/searchService';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useDispatch } from 'react-redux';
-import { addBookSearch, addBooksAudioSearch, addBooksSearch, addPodcastSearch, setSearchData } from '../../features/search/SearchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addBookSearch, addBooksAudioSearch, addBooksSearch, addPodcastSearch, deleteBooksAudioSearch, deleteBooksSearch, deletePodcastSearch, setIsLoadingState, setSearchData, setWordSearchState, } from '../../features/search/SearchSlice';
+import LottieView from 'lottie-react-native';
 const { width, height } = Dimensions.get('window');
 const Search = () => {
     const [bookSearch, setBookSearch] = useState([]);
     const [bookAudio, setBookAudio] = useState([]);
     const [podcast, setPodcast] = useState([]);
     const [wordSearch, setWordSearch] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const isLoadingState = useSelector((state) => state.search.isLoadingState);
 
     const dispatch = useDispatch();
 
     const getDataSearch = async() =>{
-      const data =  await SearchService.getAllSearchData(wordSearch);
 
-      dispatch(addBooksSearch(data.livres));
-      dispatch(addBooksAudioSearch(data.livresAudio));
-      dispatch(addPodcastSearch(data.podcasts));
+      setIsLoading(true);
+      dispatch(deleteBooksSearch([]));
+      
+      dispatch(deleteBooksAudioSearch([]));
+      
+      dispatch(deletePodcastSearch([]));
+
+      try{
+        const data =  await SearchService.getAllSearchData(wordSearch);
+      
+
+        dispatch(addBooksSearch(data.livres));
+        
+        dispatch(addBooksAudioSearch(data.livresAudio));
+        
+        dispatch(addPodcastSearch(data.podcasts));
+       
+        dispatch(setWordSearchState(wordSearch));
+        dispatch(setIsLoadingState(false));
+      }catch(e){
+        setIsLoading(false);
+
+      }finally{
+
+        setIsLoading(false);
+
+      }
+
+
+
+     
 /*       console.log(data.podcasts);
       //setBookSearch(data.livres);
       setBookAudio(data.livresAudio);
       setPodcast(data.podcasts); */
 
     }
-/*     useEffect(()=>{
+     useEffect(()=>{
+
+      
+      dispatch(deleteBooksSearch([]));
+      
+      dispatch(deleteBooksAudioSearch([]));
+      
+      dispatch(deletePodcastSearch([]));
   
-      //getDataSearch();
-      //alert(wordSearch);
+      dispatch(setIsLoadingState(true));
   
-    },[wordSearch]) */
+    },[]) 
   return (
-    <>
+    <View style={{backgroundColor:'#ffff',flex:1}}>
         <View style={styles.inputContainer1}>
       <Ionicons name="ios-search-outline" size={24} color="#999" />
       <TextInput
@@ -50,9 +86,15 @@ const Search = () => {
         <Text style={[styles.searchBtnText,{color:'red'}]}>Recherche</Text>
       </TouchableOpacity>
     </View>
+    {
+      isLoading ?<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+        <LottieView  style={{width:200,height:200,}} source={require('../../assets/loading5.json')} autoPlay loop />
+        <Text>Recherche en cours...</Text>
+      </View>
+    
    
-    <TopBarNavigationSearch />
-    </>
+    : isLoadingState?<View></View>:<TopBarNavigationSearch />}
+    </View>
   )
 }
 
@@ -149,9 +191,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#c5c3c275',
+    borderColor: '#bbb',
     backgroundColor:'#ffff',
-    borderRadius: 15,
+    borderRadius: 10,
     padding: 0,
     marginVertical: 5,
     marginRight:10,

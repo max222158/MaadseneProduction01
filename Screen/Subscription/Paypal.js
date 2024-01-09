@@ -31,7 +31,7 @@ const Paypal = ({navigation}) => {
 
 
       
-      <WebView source={{ uri: 'https://maadsene.com/paypal' }} style={{backgroundColor:'#ffff'}} 
+  <WebView source={{ uri: 'https://maadsene.com/paiement/mobile/api-paytech?iduser='+ userDataSelect.user.id}} style={{backgroundColor:'#ffff'}} 
         onMessage={event => {
           const { data } = event.nativeEvent;
           

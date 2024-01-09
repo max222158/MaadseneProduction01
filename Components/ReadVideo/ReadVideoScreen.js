@@ -46,7 +46,7 @@ export const ReadVideoScreen = ({ navigation,goBack , route }) => {
                     
                     //source={Platform.OS == 'ios' ? htmlPathIos : { uri: 'http://futurepress.github.io/epub.js/examples/highlights.html' }}
                     //source={{ uri: lien_video}}
-                    source={{ uri: "https://maadsene.com/mobile-video?video="+lien_video}}
+                    source={{ uri: lien_video}}
                     originWhitelist={['*']}
                     allowUniversalAccessFromFileURLs={true}
                     allowFileAccessFromFileURLs={true}

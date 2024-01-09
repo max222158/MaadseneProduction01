@@ -15,6 +15,8 @@ import ScreenBrightness from 'react-native-screen-brightness';
 import NewsComponent from '../Components/Home/NewsComponent';
 import fetchWithTimeout from '../utils/fetchWithTimeOut';
 import { set } from 'immer/dist/internal';
+import CategoryButton from '../Components/CategoryButtonCompnent';
+import { URL_BASE } from '../utils/utils';
 
 
 const dataloader = [
@@ -26,6 +28,9 @@ const Home = ({ navigation }) => {
 
 
   const [books, setBooks] = useState([]);
+  
+  const [free_books, setFree_books] = useState([]);
+  
   const [booksAudio, setBooksAudio] = useState([]);
   const [podcast, setPodcast] = useState([]);
   const [booksVideo, setBooksVideo] = useState([]);
@@ -44,7 +49,7 @@ const Home = ({ navigation }) => {
   const fetchDataHome = async () => {
     setIsLoading(true);
     setError(false);
-    let url = 'https://mobile.maadsene.com/api/auth/allBooks'; //data.access_token.token;
+    let url = URL_BASE+'allBooks1'; //data.access_token.token;
     try {
 
       await fetchWithTimeout(url, {
@@ -62,6 +67,7 @@ const Home = ({ navigation }) => {
 
           //alert(JSON.stringify(data));
           setBooks(data.livre);
+          setFree_books(data.free_books);
           setPodcast(data.podcast);
           setBooksVideo(data.videos);
           setCategory(data.category);
@@ -94,7 +100,7 @@ const Home = ({ navigation }) => {
     setIsLoading(true);
     //setError(false);
 
-    let url = 'https://mobile.maadsene.com/api/home'; //data.access_token.token;
+    let url = URL_BASE+'home'; //data.access_token.token;
     try {
 
       await fetchWithTimeout(url, {
@@ -200,9 +206,9 @@ const Home = ({ navigation }) => {
             <View >
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 17,
                   color: 'black',
-                  paddingLeft: 13,
+                  paddingLeft: 1,
                   fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
@@ -222,7 +228,7 @@ const Home = ({ navigation }) => {
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 17,
                   color: 'black',
                   paddingLeft: 13,
                   fontFamily:'Poppins-Bold',
@@ -302,13 +308,97 @@ const Home = ({ navigation }) => {
           </View>
         </View>
 
+        <View style={{ flex: 1, padding: 7, backgroundColor: '#ffff', paddingTop: 25 }}>
+          {/* <HomecarouselComponent /> */}
+
+          <View style={{ flex: 1, flexDirection: 'row'}}>
+            <View style={{ flex: 2 }}>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: 'black',
+                  paddingLeft: 13,
+                  fontFamily:'Poppins-Bold',
+                  fontWeight: "500", letterSpacing: 0.5
+                }}>
+                Livres gratuits
+              </Text>
+            </View>
+
+          </View>
+          <View style={{ flex: 1, marginTop: 10,backgroundColor: "#3c020108",paddingTop:10}}>
+
+            {
+              !isLoading ?
+
+                <FlatList
+                showsHorizontalScrollIndicator={false}
+                  data={free_books}
+                  keyExtractor={item => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate('DetailsBook', {
+                            item:item
+                            
+                          });
+                        }}>
+                        <BookItem3 item={item} />
+                      </TouchableOpacity>
+                      {isExist(item) ?
+                        <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
+                          onPress={() => onTapRemoveTolist(
+                            item
+                          )}
+                        >
+                          <Ionicons
+                            name="ios-bookmark"
+                            size={25}
+                            color="#60103b"
+                          />
+
+                        </TouchableOpacity> :
+                        <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
+                          onPress={() => onTapAddTolist(
+                            item
+                          )}
+                        >
+                          <Ionicons
+                            name="ios-bookmark-outline"
+                            size={25}
+                            color="black"
+                          />
+                        </TouchableOpacity>
+                      }
+
+                    </View>
+                  )}
+                  horizontal
+
+                /> :
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                  {dataloader.map((news, index) => (
+                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
+                      <View style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                    </View>
+
+                  ))}
+                </ScrollView>
+
+            }
+          </View>
+        </View>
+
         <View
           style={{ flex: 1, padding: 7,paddingTop: 0, backgroundColor: '#ffff', marginTop: 20 }}>
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 3 }}>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 17,
                   color: 'black',
                   paddingLeft: 13,
                   fontFamily:'Poppins-Bold',
@@ -383,7 +473,7 @@ const Home = ({ navigation }) => {
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 17,
                   color: 'black',
                   paddingLeft: 13,
                   
@@ -465,7 +555,7 @@ const Home = ({ navigation }) => {
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 17,
                   color: 'black',
                   paddingLeft: 13,
                   fontWeight: "500", letterSpacing: 0.5
@@ -481,17 +571,7 @@ const Home = ({ navigation }) => {
             <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} showsHorizontalScrollIndicator={false} >
 
               {category.map((category, index) => (
-                <TouchableOpacity key={index}
-
-                  onPress={() => navigation.navigate('Category', {
-                    id: category.id,
-                    nom: category.nom,
-                  })
-
-
-                  } style={{ paddingLeft: 20, paddingRight: 10, paddingBottom: 10, paddingTop: 7, borderRadius: 20, marginLeft: 20, backgroundColor: "#60103b", color: "white" }}>
-                  <Text style={{ color: "white", paddingTop: 4, fontFamily: "Arial", fontSize: 13, letterSpacing: 1 }}>{category.nom} </Text>
-                </TouchableOpacity>
+                  <CategoryButton category={category} key={index} navigation={navigation} />
               ))}
 
             </ScrollView>

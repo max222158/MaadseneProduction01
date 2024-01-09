@@ -19,6 +19,7 @@ import { BookItemAudio } from '../Component_items/BookItemAudio';
 import BookItem3 from '../Component_items/BookItem3';
 import { useEffect } from 'react';
 import fetchWithTimeout from '../utils/fetchWithTimeOut';
+import LoaderComponent from '../Components/LoaderComponent';
 const widthWindow = Dimensions.get('window').width;
 const { width, height } = Dimensions.get('window');
 const numColumns = 3;
@@ -124,11 +125,10 @@ export default function LivreAudioHome({route, navigation}) {
 
     return(
 
-      <View style={{alignContent:'center',justifyContent:'center',flex:1,alignItems:'center',backgroundColor:'white'}}>
-        <ActivityIndicator size={40} color="#691c43"/>
-        <Text style={{fontSize:25}}>En cours...</Text>
-      </View>
-    );
+      <LoaderComponent/>
+
+      );
+
   }
 
   return (
@@ -162,14 +162,7 @@ export default function LivreAudioHome({route, navigation}) {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate( 'DetailsBookAudio', {
-                      id: item.id,
-                      auteur: item.auteur,
-                      image: item.image,
-                      titre: item.titre,
-                      categorie: item.categorie,
-                      resume: item.description,
-                      url: item.lien_livre,
-                      support: item.support,
+                      item:item
                     });
 
 
@@ -180,7 +173,7 @@ export default function LivreAudioHome({route, navigation}) {
 
                     <ImageBackground
                   borderRadius={10}
-                  source={{ uri: 'https://maadsene.com/couverture/' + item.image }}
+                  source={{ uri:  item.image }}
                   resizeMode='cover'
                   style={{ width: imageWidth-5, marginTop: 15,aspectRatio: 1 / 1.5, backgroundColor: '#007bff1c',borderRadius:15 }}
                 >

@@ -38,7 +38,7 @@ export const ReadVideoScreen = ({ navigation: { goBack }, route }) => {
 
                 onBack={() => { goBack() }}
             /> */}
-            <WebView source={{ uri: 'https://maadsene.com/mobile-video?video='+lien_video }} style={{backgroundColor:'black'}} />
+            <WebView source={{ uri: lien_video }} style={{backgroundColor:'black'}} />
 
 
             {/* /* 			<Video source={{uri: 'https://vjs.zencdn.net/v/oceans.mp4'}}   

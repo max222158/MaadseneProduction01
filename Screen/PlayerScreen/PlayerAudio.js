@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -23,8 +23,9 @@ import TrackPlayer, {
   useTrackPlayerEvents,
 } from 'react-native-track-player';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAudio, setIdSong, setMinimized } from '../../features/player/playerSlice';
+import { setAudio, setIdSong, setMinimized, setTitle } from '../../features/player/playerSlice';
 import { addAlbumPlayer, initializedPlayer } from '../../services/player/PlayerService';
+import { PodcastService } from '../../services/api/podcastService';
 
 const PlayerAudio = () => {
 
@@ -47,6 +48,9 @@ const PlayerAudio = () => {
   const artist = useSelector((state) => state.audio.artist);
   const imagePodcast = useSelector((state) => state.audio.image);
   const color = useSelector((state) => state.audio.color);
+  const idPodcast = useSelector((state) => state.audio.idPodcast);
+  const podcastStoredLocal = useSelector((state) => state.podcast.podcastStoredLocal);
+  const itemRef = useRef(item);
 
 
 
@@ -64,6 +68,24 @@ const PlayerAudio = () => {
     ],
   });
   useEffect(() => {
+    
+    
+    // Stocker la valeur actuelle de item dans la référence
+    itemRef.current = item;
+
+    const timeoutId = setTimeout(() => {
+      // Comparer la valeur actuelle de item avec la valeur stockée dans la référence
+      if (item === itemRef.current) {
+
+        PodcastService.updateNumberOfViewPodcast(idPodcast);
+
+      }
+    }, 5000);
+
+    // Nettoyer la référence si le composant est démonté avant que le setTimeout ne soit atteint.
+    return () => clearTimeout(timeoutId);
+  }, [item]);
+  useEffect(() => {
 
 
     if (!minimize) {
@@ -77,9 +99,18 @@ const PlayerAudio = () => {
 
   useEffect(() => {
 
+    if(idPodcast != 0){
+
+
+    }
+
+  }, [idPodcast]);
+
+  useEffect(() => {
+          TrackPlayer.setupPlayer();
 
     if (album.length == 0) {
-      TrackPlayer.setupPlayer();
+
 
 
     } else {
@@ -95,6 +126,11 @@ const PlayerAudio = () => {
     //alert(slidefinished);
     if (slidefinished) {
       dispatch(setMinimized(true));
+
+
+    }else{
+
+      
 
     }
 
@@ -139,10 +175,12 @@ const PlayerAudio = () => {
       dispatch(setIdSong(id));
       setItem(track);
       setTrackTitle(title);
+      dispatch(setTitle(title));
       setTrackArtist(artist);
       setTrackArtwork(artwork);
       setImagePod(image);
       TrackPlayer.play();
+
       
 
     }
@@ -161,13 +199,18 @@ const PlayerAudio = () => {
     setSlideFinished(false);
     translateY.value = withSpring(0, { damping: 20, stiffness: 30 });
   };
+  const closeView = () => {
+    translateY.value = withTiming(height); // Faites glisser la vue en bas de l'écran
+        setSlideFinished(true)
+    // Attendez que l'animation soit terminée pour masquer la vue
+  };
 
   return (
 
 
     <PanGestureHandler onGestureEvent={gestureHandler1}>
       <Animated.View style={[styles.bottomSheet, animatedStyle, { backgroundColor: color, flex: 1, position: 'absolute', zIndex: 9999, width: '100%', height: '100%' }]}>
-        <HeaderComponent />
+        <HeaderComponent onPressBack={closeView} />
         <ImageTitleAuthorComponent author={artist} title={trackTitle} imageSource={imagePodcast} />
         <SlideControlButtonComponent currentAudio={item} />
 

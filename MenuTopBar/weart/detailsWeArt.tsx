@@ -70,6 +70,8 @@ const images = [
 
   }, []);
 
+
+
   const handleCloseModalPress = useCallback(() => {
     //console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     bottomSheetModalRef.current?.close();
@@ -199,7 +201,7 @@ const images = [
                 }>
                 <ImageBackground
                   borderRadius={10}
-                  source={{ uri: "https://maadsene.com/Arts/" + image }}
+                  source={{ uri:  image }}
                   resizeMode='cover' style={{ width: '100%', aspectRatio: 1 / 0.6 }} >
 
 
@@ -276,7 +278,7 @@ const images = [
           <ScrollView style={styles.contentContainer}>
             <Image
               style={styles.picArt}
-              source={{ uri: "https://maadsene.com/Arts/" + image }}
+              source={{ uri:  image }}
             />
             <Text style={{ fontSize: 15, padding: 15, paddingBottom: 5, color: 'black', fontWeight: '900', alignSelf: 'center' }}>{title}</Text>
 
@@ -321,7 +323,7 @@ const images = [
 
             <TouchableOpacity
               style={{ backgroundColor: "gray", marginTop: 25, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
-              onPress={() => { navigation.navigate('detailsWeArtImage') }}
+              onPress={() => {  handleCloseModalPress(); }}
             >
 
 

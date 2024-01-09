@@ -152,7 +152,7 @@ const LoginScreen = ({ navigation }) => {
         }),
       }).then((response) => response.json())
         .then((json) => {
-
+          console.log(json);
 
           if (json.status === "noEmail") {
             let data = {email: email, password:"email"};
@@ -232,6 +232,7 @@ const LoginScreen = ({ navigation }) => {
 
     } catch (e) {
       setIsLoading(false);
+      console.log(e)
     }
   }catch (e) {
     setIsLoading(false);
@@ -397,17 +398,19 @@ const LoginScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.buttonContainer,{marginBottom:50}]} onPress={handleLogin}>
+{/*       <TouchableOpacity style={[styles.buttonContainer,{marginBottom:50}]} onPress={handleLogin}>
         <View style={styles.iconContainer}>
           <Ionicons name='logo-facebook' size={22} color='#3B5998' />
         </View>
         <View style={styles.buttonTextContainer}>
           <Text style={styles.buttonText}>Se connecter avec Facebook</Text>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
+      {
+        isLoading?<LoaderComponent loading={isLoading} /> : null
+      }
 
-      <LoaderComponent loading={isLoading} />
     </ScrollView>
   );
 };

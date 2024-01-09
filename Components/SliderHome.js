@@ -5,6 +5,8 @@ import { StatusBar, Animated, Text, Image, View, StyleSheet, Dimensions, Button 
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import ButtonWithArrow from './ButtonContinue';
 const {width, height} = Dimensions.get('screen');
+import LottieView from 'lottie-react-native';
+
 
 // https://www.flaticon.com/packs/retro-wave
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
@@ -17,19 +19,19 @@ const DATA = [
     "key": "3571747",
     "title": "Livres numériques",
     "description": "Lisez partout, tout le temps, avec MAADSENE en ligne.",
-    "image": require('../assets/login/background.png')
+    "image": require('../assets/homereading.json')
   },
   {
     "key": "3571680",
     "title": "Podcasts",
     "description": "Découvrez l'univers sonore des histoires les plus captivantes avec nos podcasts",
-    "image": require('../assets/login/imgpodcast.jpg')
+    "image": require('../assets/homepodcast.json')
   },
   {
     "key": "3571603",
     "title": "Vidéos",
     "description": "Regardez, écoutez, apprenez : découvrez le monde en ligne.",
-    "image": require('../assets/login/imgvideo.jpg')
+    "image": require('../assets/homevideo.json')
   }
 ];
 const Indicator = ({scrollX}) =>{
@@ -164,16 +166,9 @@ export default function SliderHome({navigation}) {
                     
                     <View style={{flex:0.7,padding:10}}>
 
-                    <Image 
-                        source={item.image}
-                        style={{
-                            width:width-50,
-                            height:'100%',
-                            resizeMode:'contain',
-                            borderRadius:20,
-                            
-                        }}
-                    />
+
+                    <LottieView   style={{width:300,height:'100%'}} source={item.image} autoPlay loop />
+  
 
                     
                     </View>

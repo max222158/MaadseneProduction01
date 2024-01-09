@@ -108,7 +108,7 @@ const {width, height} = Dimensions.get('window');
 
               })}}>
                 <View style={styles.bookContainer}>
-                <Image style={styles.image} source={{ uri: "https://maadsene.com/couverture/" + item.image }} />
+                <Image style={styles.image} source={{ uri: item.image }} />
                 <View style={styles.dataContainer}>
                   <Text numberOfLines={1} style={styles.title}>
                     {item.titre}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, } from 'react-native';
 import { WebView } from 'react-native-webview';
+import LoaderComponent from '../../Components/LoaderComponent';
 
 // ...
 export default function ReadBookScreen() {
@@ -18,11 +19,7 @@ export default function ReadBookScreen() {
   if(isLoading){
 
     return(
-
-      <View style={{alignContent:'center',justifyContent:'center',flex:1,alignItems:'center',backgroundColor:'white'}}>
-        <ActivityIndicator size={40} color="#691c43"/>
-        <Text style={{fontSize:25}}>En cours...</Text>
-      </View>
+      <LoaderComponent />
     );
   }
   return(

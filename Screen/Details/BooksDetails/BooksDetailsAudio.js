@@ -21,8 +21,8 @@ const PodcastDetails = ({ navigation, route }) => {
 
     //alert(JSON.stringify(stateAudio));
 
-    var { id, image, auteur, titre, categorie, resume, url,support } = route.params;
-    let bookAudio = [{'id':id,'title':titre,'url':'https://maadsene.com/livres_numeriques/'+url,'artist':auteur,'image':image}];
+    var { id, image, auteur, titre, categorie, resume, url,support,free } = route.params;
+    let bookAudio = [{'id':id,'title':titre,'url':url,'artist':auteur,'image':image}];
     const [isLoading,setIsLoading] = React.useState(true);
     const [podcast,setPodcast] = React.useState([]);
 
@@ -123,7 +123,7 @@ const PodcastDetails = ({ navigation, route }) => {
 
 
 
-                {is_register? 
+                {is_register || free == 1? 
                 <TouchableOpacity
                     style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
                     onPress={() =>{

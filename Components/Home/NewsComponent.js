@@ -37,8 +37,10 @@ const NewsComponent = () => {
             <ScrollView horizontal={true} style={styles.scroll} showsHorizontalScrollIndicator={false}>
             {dataloader.map((news, index) => (
                         <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
-                        <View  style={{ width: 120, height: 160, borderRadius: 10, marginTop: 0,backgroundColor:'#007bff1c' }}></View>
-
+                        <View  style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0,backgroundColor:'#007bff1c' }}></View>
+                        <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+         
                     </View>
 
             ))}
@@ -79,7 +81,7 @@ const NewsComponent = () => {
 
                 <ImageBackground
                   borderRadius={10}
-                  style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0,marginRight:10,marginBottom:10,backgroundColor: '#007bff1c' }}
+                  style={{ width: 130, height: 195, borderRadius: 10, marginTop: 0,marginRight:10,  paddingLeft: 10, marginBottom:10,backgroundColor: '#007bff1c' }}
                   resizeMode='cover'
                   source={{ uri: news.uri }}
                   //style={{ width: imageWidth-5, marginTop: 15,aspectRatio: 1 / 1.5, backgroundColor: '#007bff1c',borderRadius:15 }}
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     scroll: {
         marginBottom: 0,
         marginTop: 2,
-        paddingTop: 20,
+        paddingTop: 10,
         paddingBottom: 0
     },
     boxShadow: {

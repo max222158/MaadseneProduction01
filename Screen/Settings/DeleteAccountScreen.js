@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity,ActivityIndicator } from 'react-native'
 import React from 'react'
 import {useSelector,useDispatch} from 'react-redux';
-import { logout } from '../../features/user/authSlice';
+import { logout, saveLogged, saveUser } from '../../features/user/authSlice';
+import { clearUserData } from '../../utils/utils';
 
 const DeleteAccountScreen = () => {
 
@@ -9,8 +10,13 @@ const DeleteAccountScreen = () => {
 
     const userDataSelect = useSelector(state => state.userAuth.userDetails);
     const dispatch = useDispatch();
-    const disconnect = () => {   
-        dispatch(logout());            
+    const disconnect = () => {
+     
+      //dispatch(saveUser([]));
+      dispatch(saveLogged(false));
+      clearUserData();
+      dispatch(logout());
+
     }
 
   const deleteUser = async() =>{

@@ -22,7 +22,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { withStyleAnimation } from 'react-native-reanimated/lib/types/lib/reanimated2/animation';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDataDB, saveDataApp, setHomeData } from '../../features/user/authSlice';
-import { getDataDBasynStore } from '../../utils/utils'
+import { URL_BASE, getDataDBasynStore } from '../../utils/utils'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WeArt from '../../MenuTopBar/WeArt';
@@ -45,7 +45,7 @@ const MainScreen = ({ navigation }) => {
     setIsLoading(true);
     //setError(false);
 
-    let url = 'https://mobile.maadsene.com/api/home'; //data.access_token.token;
+    let url = URL_BASE+'home'; //data.access_token.token;
     try {
 
       await fetchWithTimeout(url, {
@@ -203,7 +203,6 @@ const MainScreen = ({ navigation }) => {
             }} />
           <Tab.Screen name="Livres Audios" component={LivreAudio}
             options={{
-              lazy: false,
               tabBarLabelStyle: { padding: 10, fontSize: 12,  fontWeight: "500", letterSpacing: 1 }
             }} />
 

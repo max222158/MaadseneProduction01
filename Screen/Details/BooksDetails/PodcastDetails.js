@@ -112,7 +112,7 @@ const PodcastDetails = ({ navigation, route }) => {
                 <View style={styles.container1} >
                     <View style={{ backgroundColor: "#ffff", width: "100%", height: 100, borderBottomRightRadius: 50, borderBottomLeftRadius: 50 }}></View>
                     <Image
-                        source={{ uri: "https://maadsene.com/couverture/" + image }}
+                        source={{ uri:  image }}
                         resizeMode="cover"
                         style={styles.imageDetails}
                         imageStyle={{ borderWidth: 5, borderColor: "red" }}

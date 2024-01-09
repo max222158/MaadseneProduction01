@@ -5,8 +5,18 @@ const initialState = {
   image:'',
   minimize:true,
   idsong:0,
+  title:'',
   artist:'',
-  color:'#bbb'
+  color:'#bbb',
+  audioStart:false,
+  idPodcast:0,
+  itemPodcast:{},
+  songType:"Podcast",
+
+  playerOff:true,
+  playpause:-1,
+  playpause1: -1,
+  playpause2: 0,
 
 }
 
@@ -25,6 +35,14 @@ export const playerSlice = createSlice({
 
       
     },
+    setAudioStart: (state, action) => {
+
+      
+      state.audioStart = action.payload;  
+
+
+      
+    },
 
     setPlayer: (state, action) => {
 
@@ -35,10 +53,36 @@ export const playerSlice = createSlice({
         
       },
 
+      
+    setItemPodcast: (state, action) => {
+
+      
+      state.itemPodcast = action.payload;  
+
+
+      
+    },
+
       setColor: (state, action) => {
 
       
         state.color = action.payload;  
+  
+  
+        
+      },
+      setSongType: (state, action) => {
+
+      
+        state.songType = action.payload;  
+  
+  
+        
+      },
+      setIdPodcast: (state, action) => {
+
+      
+        state.idPodcast = action.payload;  
   
   
         
@@ -53,10 +97,37 @@ export const playerSlice = createSlice({
   
         
       },
+
+
+      setPausePlay: (state, action) => {
+
+      
+        state.playpause = action.payload;  
+  
+  
+        
+      },
+
+      setPausePlay1: (state, action) => {
+
+      
+        state.playpause1 = action.payload;  
+  
+  
+        
+      },
       setArtist: (state, action) => {
 
       
         state.artist = action.payload;  
+  
+  
+        
+      },
+      setTitle: (state, action) => {
+
+      
+        state.title = action.payload;  
   
   
         
@@ -79,17 +150,18 @@ export const playerSlice = createSlice({
   
         
       },
+      setPlayerOff: (state, action) => {
+
+      
+        state.playerOff = action.payload;  
+  
+  
+        
+      },
 
         
   },
-
-  extraReducers: {
-
-
-
-
-  },
 });
-export const { setAudio,setColor,  setPlayer,setImage,setMinimized,setIdSong,setArtist} = playerSlice.actions;
+export const { setAudio, setSongType,setPausePlay,setPausePlay1, setPlayerOff,setTitle, setColor,setItemPodcast, setIdPodcast, setAudioStart,  setPlayer,setImage,setMinimized,setIdSong,setArtist} = playerSlice.actions;
 export default playerSlice.reducer;
 

@@ -11,7 +11,7 @@ const NewsComponent = () => {
             <View >
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: 19,
                   color: 'black',
                   paddingLeft: 13,
                   fontWeight: "500",letterSpacing: 1

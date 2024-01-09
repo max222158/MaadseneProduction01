@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector, useDispatch } from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { removeToList } from '../../features/favorite/favoriteSlice';
+import LoaderComponent from '../../Components/LoaderComponent';
 const { width, height } = Dimensions.get('window');
 
 
@@ -85,10 +86,7 @@ const FavorisScreen = ({ navigation }) => {
 
     return (
 
-      <View style={{ alignContent: 'center', justifyContent: 'center', flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-        <ActivityIndicator size={40} color="#691c43" />
-        <Text>En cours...</Text>
-      </View>
+      <LoaderComponent/>
     );
   }
 
@@ -149,7 +147,7 @@ const FavorisScreen = ({ navigation }) => {
                 if (item.support == "podcast") {
 
 
-                  navigation.navigate('DetailsPodcast', {
+                  navigation.navigate('detailsPodcast', {
                     item:item
                   });
                 }
@@ -177,9 +175,9 @@ const FavorisScreen = ({ navigation }) => {
 
                 <ImageBackground
                   borderRadius={10}
-                  source={{ uri: 'https://maadsene.com/couverture/' + item.image }}
+                  source={{ uri:  item.image }}
                   resizeMode='cover'
-                  style={{ width: imageWidth-5, marginTop: 15,aspectRatio: item.support == "podcast"?1/1:1/1.5, backgroundColor: '#007bff1c',borderRadius:15 }}
+                  style={{ width: imageWidth-5, marginTop: 15,aspectRatio: item.support == "podcast" ? 1/1 : 1/1.6, backgroundColor: '#007bff1c',borderRadius:15 }}
                 >
                   {/* <Ionicons name='ios-heart' size={32} color="red" on /> */}
                   <TouchableOpacity onPress={()=>{onTapRemoveTolist(item)}} style={{marginTop:-10}}>

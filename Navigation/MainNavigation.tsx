@@ -29,6 +29,8 @@ import CarrouselArt from '../MenuTopBar/weart/CarrouselArt';
 import PodcastDetailsScreen from '../Screen/Details/PodcastDetailsScreen';
 import PlayerAudio from '../Screen/PlayerScreen/PlayerAudio';
 import Search from '../Screen/Search/Search';
+import AllArt from '../MenuTopBar/weart/AllArt';
+import CategoryPodcastScreen from '../Screen/Podcasts/CategoryPodcastScreen';
 
 
 
@@ -39,6 +41,7 @@ const navbarHeight = screenHeight - (windowHeight + StatusBar.currentHeight);
 const MainNavigation = () => {
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
   const stateAudio = useSelector(state => state.audio.miniplayer);
+  const audioStart = useSelector(state => state.audio.audioStart);
   const isUpdate = useSelector(state => state.userAuth.isUpdate);
   //alert("---------------"+JSON.stringify(stateAudio));
   // variables
@@ -60,7 +63,7 @@ const MainNavigation = () => {
         <StatusBar backgroundColor="white" barStyle='dark-content' />
         {/*         {stateAudio?
         <PlayerScreen marginB={navbarHeight}/>:null} */}
-        <PlayerAudio />
+        {audioStart ? <PlayerAudio /> : null}
         <Stack.Navigator>
 
           <Stack.Screen
@@ -243,10 +246,10 @@ const MainNavigation = () => {
           <Stack.Screen
             name="search_page"
             options={{
-              title:"Recherche",
+              title: "Recherche",
 
               headerStyle: {
-                
+
 
               },
               /*               headerShadowVisible: false,
@@ -255,6 +258,39 @@ const MainNavigation = () => {
 
             }}
             component={Search}
+          />
+
+          <Stack.Screen
+            name="weart"
+            options={{
+              title: "WeART",
+
+              headerStyle: {
+
+
+              },
+              /*               headerShadowVisible: false,
+                            headerShown: false */
+
+
+            }}
+            component={AllArt}
+          />
+                    <Stack.Screen
+            name="podcast_category"
+            options={{
+              title: "Podcasts",
+
+              headerStyle: {
+
+
+              },
+              /*               headerShadowVisible: false,
+                            headerShown: false */
+
+
+            }}
+            component={CategoryPodcastScreen}
           />
 
         </Stack.Navigator>

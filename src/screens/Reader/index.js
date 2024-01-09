@@ -15,6 +15,7 @@ import { _getPages1, _storePages, _storeNote } from './store';
 import { openDatabase } from "react-native-sqlite-storage";
 import { useSelector } from 'react-redux';
 import ModalSettingComponent from './ModalSettingComponent';
+import { BooksService } from '../../../services/api/booksService';
 
 const db = openDatabase({
     name: "maadsene",
@@ -93,9 +94,14 @@ function Reader({ navigation, route, goBack }) {
 
     const [toc, setToc] = useState(null);
     const [url, setUrl] = useState("");
+    const [urlBookmark, setUrlBookmark] = useState("");
+    const [position, setPosition] = useState("");
     const [cfi, setCfi] = useState("");
     const [pathUrl, setPathUrl] = useState(path);
     const [urlEntier, setUrlEntier] = useState("");
+    const [ titleChapitre, setTitleChapitre] = useState("");
+
+   
 
     const isEpubReader = useSelector(state => state.userAuth.isEpubReader);
 
@@ -226,6 +232,24 @@ function Reader({ navigation, route, goBack }) {
 
     }, [pathUrl]);
 
+    useEffect(() => {
+    
+    
+        // Stocker la valeur actuelle de item dans la référence
+    
+        const timeoutId = setTimeout(() => {
+          // Comparer la valeur actuelle de item avec la valeur stockée dans la référence
+
+    
+            //PodcastService.updateNumberOfViewPodcast(idPodcast);
+            BooksService.updateNumberOfViewBooks(idbook);
+    
+        }, 10000);
+    
+        // Nettoyer la référence si le composant est démonté avant que le setTimeout ne soit atteint.
+        return () => clearTimeout(timeoutId);
+      }, []);
+
     useLayoutEffect(() => {
 
 
@@ -240,6 +264,44 @@ function Reader({ navigation, route, goBack }) {
 
 
     }, []);
+
+
+    useEffect(() => {
+
+        //alert(urlBookmark);
+    }, [urlBookmark]);
+
+
+    useEffect(() => {
+        const urlBookmark1 = urlBookmark;
+        const posi = position;
+        console.log(urlBookmark1);
+        
+        // Vérifiez si la valeur de urlBookmark existe dans le tableau
+        const elementTrouve = pages.find(element => element.url === urlBookmark1);
+        
+        // Si l'élément est trouvé, comparez la position
+        if (elementTrouve) {
+          const positionEnEntier = Math.floor(posi);
+          const positionElement = Math.floor(elementTrouve.position);
+          console.log(positionEnEntier ,"----", positionElement);
+          // Comparez la position en tant qu'entier
+          const estPositionIdentique = positionEnEntier === positionElement;
+          
+          console.log(estPositionIdentique);
+          if(estPositionIdentique){
+
+            setIsMarked(true);
+
+          }else{
+            setIsMarked(false);
+          }
+          
+        } else {
+        setIsMarked(false);
+          console.log(false); // Si l'élément n'est pas trouvé
+        }
+    }, [position]);
 
 
     const _storageTheme = async (theme) => {
@@ -344,9 +406,30 @@ function Reader({ navigation, route, goBack }) {
 
 
                 return;
-            case 'TOfMatiere':
-                setToc(parsedData.toc);
-                //alert(JSON.stringify(toc));
+            case 'tableofmatiere':
+                setToc(parsedData.data);
+                //alert(JSON.stringify(parsedData.data));
+
+
+                return;
+
+            case 'titleChapitre':
+                    setTitleChapitre(parsedData.data);
+                    //alert(JSON.stringify(parsedData.data));
+    
+    
+                    return;
+    
+            /// POUR REALISER LE BOOKMARK STOCKER LE LIEN DU CHAPITRE ///////
+            case 'url_chapter':
+                //setToc(parsedData.data);
+                let data = parsedData.data;
+
+
+                setUrlBookmark(data.url);
+
+                //alert(JSON.stringify(parsedData.data));
+
 
 
                 return;
@@ -356,13 +439,14 @@ function Reader({ navigation, route, goBack }) {
 
                 webview.current.injectJavaScript(`reloadIfNotRead('${idbook}','${path}');`);
 
+                
 
                 return;
             case 'highlight':
                 return;
 
             case 'readiumtest':
-                alert("test readium");
+                //alert("test readium");
                 setOpenBook(true);
 
 
@@ -374,6 +458,13 @@ function Reader({ navigation, route, goBack }) {
             case 'isLoading':
                 setIsLoading(parsedData.isLoading);
                 return;
+            case 'position':
+                    setPosition(parsedData.data);
+                    //alert(parsedData.data)
+
+                    console.log(position);
+
+                    return;
             case 'singleTouch':
                 if (isVisibleBar) {
                     setIsVisibleBar(false)
@@ -396,61 +487,75 @@ function Reader({ navigation, route, goBack }) {
     }
 
     function savePage() {
-        var newPages = pages;
-        //alert(newPages);
+        //var newPages = pages;
 
-        if (isMarked) {
-            var index = -1;
-            for (let i = 0; i < pages.length; i++) {
-                const page = pages[i];
-                if (page.cfi == url) {
-                    index = i;
-                    break;
-                }
-
-            }
-            if (index > -1) {
-                let newPages = pages;
-                newPages.splice(index, 1);
-                setPages(newPages);
-                setIsMarked(false);
-            }
-        } else {
-            //newPages.push({ progress, cfi: url, date: new Date() });
-
-
-            /*             for (let i = 0; i < pages.length; i++) {
-                            const page = pages[i];
-                            if (page.cfi == cl) {
-                                index = i;
-                                return;
-                            }
-                        } */
-
-            newPages.push({ progress, cfi: url, text: cfi, path: urlEntier, date: new Date() });
-
-            db.transaction(txn => {
+        if(!isMarked){
+            setIsMarked(true);
+            let pageSaved = {url:urlBookmark, position:position,title:titleChapitre, date: new Date()}
+            pages.unshift(pageSaved);
+    
+            //alert(JSON.stringify(pages));
+    
+            db.transaction(txn => {   
                 txn.executeSql(
                     `Update bookmark set bookmark = ? where idbook =? `,
-                    [JSON.stringify(newPages), idbook],
+                    [JSON.stringify(pages), idbook],
                     (sqlTxn, res) => {
-                        //console.log(`${category} category added successfully`);
-                        //alert("update"+JSON.stringify(newPages));
-
-
+                      //console.log(`${category} category added successfully`);
+                      //alert("update"+JSON.stringify(newPages));
+                      
+                      
                     },
                     error => {
-                        console.log("error on adding category " + error.message);
+                      console.log("error on adding category " + error.message);
                     },
-                );
+                  );
+                  
+                });
+    
 
-            });
-            setIsMarked(true);
+        }else{
+
+            const urlRecherchee = urlBookmark;
+            const positionRecherchee = position;
+            
+            // Utilisation de findIndex pour trouver l'index correspondant à l'URL et la position
+            const indexTrouve = pages.findIndex(element => element.url === urlRecherchee && element.position === positionRecherchee);
+            
+            if (indexTrouve !== -1) {
+                let newPages = pages;
+                newPages.splice(indexTrouve, 1);
+                setPages(newPages);
+
+                db.transaction(txn => {   
+                    txn.executeSql(
+                        `Update bookmark set bookmark = ? where idbook =? `,
+                        [JSON.stringify(newPages), idbook],
+                        (sqlTxn, res) => {
+                          //console.log(`${category} category added successfully`);
+                          //alert("update"+JSON.stringify(newPages));
+                          
+                          
+                        },
+                        error => {
+                          console.log("error on adding category " + error.message);
+                        },
+                      );
+                      
+                    });
+                    console.log("L'index correspondant est :", indexTrouve);
+            } else {
+              console.log("Aucune correspondance trouvée dans le tableau.");
+            }
+/*             let newPages = pages;
+            newPages.splice(index, 1);
+            setPages(newPages); */
+
+            setIsMarked(false);
 
         }
-        //_storePages(idbook,newPages);
 
-        //console.log("newPages",newPages);
+     
     }
 
     const tableOfMatiere = () => {
@@ -552,7 +657,7 @@ function Reader({ navigation, route, goBack }) {
                     }}
                     //cacheEnabled={true}
                     //cacheMode="LOAD_DEFAULT"
-                    //incognito={true}
+                    incognito={true}
                     allowUniversalAccessFromFileURLs={true}
                     allowFileAccessFromFileURLs={true}
                     allowFileAccess
@@ -646,8 +751,13 @@ function Reader({ navigation, route, goBack }) {
                                 borderTopWidth: 1, borderColor: "#dddddd82"
                             }}
                                 onPress={() => {
-                                    webview.current?.injectJavaScript(`$("#${item.id}").trigger('click');true`);
+
+                                    let path1 = path+""+item.href;
+                                    alert(path1);
+                                    webview.current.injectJavaScript(`gotoChapterLocationTOC('${idbook}','${path1}');`);
+
                                     //alert(item.id);
+                                    //setIsMarked(true);
 
                                     setvisibleToc(false);
                                 }}>
@@ -668,11 +778,11 @@ function Reader({ navigation, route, goBack }) {
 
             {visibleSetting ?
 
-                <SafeAreaView style={{ position: 'absolute', padding: 10, backgroundColor: 'white', top: 60, right: 5, width: 200, borderColor: "#dddddd82", borderWidth: 2 }} >
+                <SafeAreaView style={{ position: 'absolute', padding: 10, backgroundColor: 'white', top: 60, right: 5, width: 250, borderColor: "#dddddd82", borderWidth: 5 }} >
 
                     <TouchableOpacity /*disabled={isLoading?true:false}*/
-                        style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }} onPress={() => { setvisibleSetting(false); setvisiblebookmark(true) }}>
-                        <Text style={{ fontSize: 16, marginBottom: 15 }}>Pages enregistrées</Text>
+                        style={{ paddingTop: 10, paddingBottom: 0, paddingLeft: 10 }} onPress={() => { setvisibleSetting(false); setvisiblebookmark(true) }}>
+                        <Text style={{ fontSize: 16, marginBottom: 15,fontFamily:'Poppins-Bold' }}>Pages enregistrées</Text>
                     </TouchableOpacity>
 
                 </SafeAreaView> : null}
@@ -703,19 +813,22 @@ function Reader({ navigation, route, goBack }) {
                                 //webview.current?.injectJavaScript(`$("#firstdivmaad").trigger("click",['par1','par2']);true`); 
                                 //
 
-                                setPathUrl((item.path).slice(1, -1));
+
                                 //alert(pathUrl);
                                 setvisibleToc(false);
                                 setvisiblebookmark(false);
                                 setIsMarked(true);
-
+                                let path_bookmark = item.url
+                                let position = item.position
+                                webview.current.injectJavaScript(`gotoChapterLocation('${idbook}','${path}','${path_bookmark}','${position}');`);
 
 
 
                             }}>
 
                             <Text style={{ color: 'black', fontSize: 15 }}>{moment(item.date).fromNow()}</Text>
-                            <Text numberOfLines={3}>{item.text}</Text>
+                            <Text style={{ color: 'gray', fontSize: 13 }}>Chapitre: {item.chapitre}</Text>
+                            <Text numberOfLines={3} style={{color:'orange'}}>{parseInt(item.position, 10)} %</Text>
                         </TouchableOpacity>
 
 

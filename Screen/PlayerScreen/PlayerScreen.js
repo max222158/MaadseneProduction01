@@ -228,7 +228,7 @@ const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
             <View style={[styles.imageWrapper, styles.elevation]}>
               <Image
                 //   source={item.artwork}
-                source={{uri:"https://maadsene.com/couverture/"+artwork}}
+                source={{uri:artwork}}
                 style={styles.musicImage}
               />
             </View>

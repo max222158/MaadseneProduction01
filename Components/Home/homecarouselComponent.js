@@ -40,7 +40,8 @@ const NewsComponent = () => {
                     style={{
                         fontSize: 18,
                         color: 'black',
-                        paddingLeft: 13,
+                        
+                        fontFamily:"Poppins-Bold",
                         fontWeight: "500", letterSpacing: 1
                     }}>
                     Nouveautés

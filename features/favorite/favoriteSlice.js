@@ -4,7 +4,8 @@ import { useSelector,useDispatch } from 'react-redux';
 const initialState = {
   loading: false,
   favorite:[],
-  test:{}
+  test:{},
+  lastPodcastRead:[]
 
 }
 
@@ -28,15 +29,18 @@ export const favoriteSlice = createSlice({
       state.favorite = state.favorite.filter((movie) => movie.id !== action.payload.id)
 
     },
+    addToPodcastRead: (state, action) => {
+      
+      state.lastPodcastRead = [ ...action.payload, ...state.lastPodcastRead];  
+      //state.favorite = action.payload;
+      //console.log("addtolisttttttttttttttttttttttttttt")
 
+    },
         
   },
 
-  extraReducers: {
 
-
-  },
 });
-export const { addToList,removeToList } = favoriteSlice.actions;
+export const { addToList,removeToList,addToPodcastRead } = favoriteSlice.actions;
 export default favoriteSlice.reducer;
 

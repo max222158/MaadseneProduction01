@@ -6,7 +6,7 @@ export default BookAudio = ({item}) => {
     <View style={styles.container}>
       <View style={styles.img_back}>
         <ImageBackground
-          source={{uri: 'https://maadsene.com/couverture/' + item.image}}
+          source={{uri:  item.image}}
           resizeMode="contain"
           imageStyle={{ borderRadius: 5,height:200}}
           style={styles.backgr}></ImageBackground>
