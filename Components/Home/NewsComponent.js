@@ -36,12 +36,11 @@ const NewsComponent = () => {
         return (
             <ScrollView horizontal={true} style={styles.scroll} showsHorizontalScrollIndicator={false}>
             {dataloader.map((news, index) => (
-                        <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
-                        <View  style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0,backgroundColor:'#007bff1c' }}></View>
-                        <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
-                      <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
-         
-                    </View>
+                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
+                    <View style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
+                    <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                    <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                  </View>
 
             ))}
             </ScrollView>
@@ -69,21 +68,24 @@ const NewsComponent = () => {
                 {homeData.news.map((news, index) => (
                     <TouchableOpacity key={index} style={styles.container} onPress={() =>{
                         if(news.support === "Livre"){
-                        navigation.navigate('ReadBook', { image: news.image,
-                         path: news.path, title: "", idbook: news.id })
+                            navigation.navigate('DetailsBook', {
+                                item:news
+                                
+                              });
                         }
                         if(news.support === "Livre audio"){
                             navigation.navigate( 'DetailsBookAudio', {
-                               item:item});
+                                item:news
+                              });
                         }
-
-                    }}>
+                        
+                    }}  >
 
                 <ImageBackground
-                  borderRadius={10}
-                  style={{ width: 130, height: 195, borderRadius: 10, marginTop: 0,marginRight:10,  paddingLeft: 10, marginBottom:10,backgroundColor: '#007bff1c' }}
+                  borderRadius={7}
+                  style={{ width: 120, height: 180, borderRadius: 7, marginTop: 0, marginBottom:10,backgroundColor: '#007bff1c' }}
                   resizeMode='cover'
-                  source={{ uri: news.uri }}
+                  source={{ uri: news.image }}
                   //style={{ width: imageWidth-5, marginTop: 15,aspectRatio: 1 / 1.5, backgroundColor: '#007bff1c',borderRadius:15 }}
                 >
                 {news.support == "Livre audio"?
@@ -124,7 +126,7 @@ const NewsComponent = () => {
 const styles = StyleSheet.create({
     container: {
 
-        marginLeft: 0,
+        paddingLeft: 16,
 
     },
     scroll: {

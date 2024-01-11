@@ -225,8 +225,16 @@ const App = () => {
     const fetchPodcastLocal = async () => {
       const data = await  PodcastService.getPodcastToLocal('podcast_local'); // Remplacez 'votreClePodcast' par la clé appropriée
       //PodcastService.storePodcastToLocal('favorites',[]);
-      //alert(JSON.stringify(data));
-      dispatch(setPodcastStored(data));
+
+      if(data == null){
+
+        dispatch(setPodcastStored([]));
+
+      }else{
+        dispatch(setPodcastStored(data));
+
+      }
+      
     };
 
     fetchPodcastLocal();

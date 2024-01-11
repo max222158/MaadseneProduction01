@@ -17,11 +17,12 @@ const VideoScreen = () => {
         originWhitelist={['*']}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        onLoadProgress={()=>{setIsLoading(true)}}
         allowUniversalAccessFromFileURLs={true}
       />
             {isLoading?
         <View style={styles.ActivityIndicatorStyle}>
-          <ActivityIndicator size={40} color='#5a104ef2' />
+          <ActivityIndicator size={60} color='#5a104ef2' />
         </View>:null
 
       }
@@ -31,4 +32,18 @@ const VideoScreen = () => {
 
 export default VideoScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+
+  ActivityIndicatorStyle:{
+
+    flex:1,
+    position:'absolute',
+    margin:'auto',
+    left:0,
+    right:0,
+    top:0,
+    bottom:0,
+    justifyContent:'center'
+  }
+})

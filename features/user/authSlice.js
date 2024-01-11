@@ -13,6 +13,7 @@ const initialState = {
   categoryState:[],
   book:[],
   isUpdate:false,
+  versionapp:3,
   homeData:[],
   isEpubReader:true
 }

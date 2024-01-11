@@ -49,20 +49,6 @@ const NewsComponent = () => {
             </View>
             <ScrollView horizontal={true} style={styles.scroll} >
 
-                {/*                     <TouchableOpacity style={styles.container} onPress={() =>
-                            navigation.navigate('ReadBook',{image:'essaieetportrait.jpg',path: "https://readium.maadsene.com/reader/?epub=epub_content%2Fpg67096",title:"",idbook:7777})
-                        }>
-                        <View style={[styles.boxShadow,{width:320,flexDirection:'row',marginTop:30,paddingBottom:15,paddingLeft:10,paddingRight:10}]}>
-                            <Image source={{uri:'https://maadsene.com/couverture/essaieetportrait.jpg'}}  style={{ width: 120, height: 160 ,borderRadius:10,marginTop:-25}}/>
-                            <View style={{width:180,marginLeft:10,paddingTop:15}}>
-                                <Text style={{fontSize:15,fontWeight:'800',color:'black',letterSpacing:1,marginLeft:5}} letterSpacing={0.8} numberOfLines={1}>Essais et Portraits</Text>
-                                <Text style={{fontSize:11,marginLeft:5,paddingTop:10}} numberOfLines={5} >Ces portraits n'auraient jamais été réunis en volume sans l'aimable insistance de quelques bibliophiles ; écrits pour des revues, au moment que l'on jugea propice pour les faire paraître — le plus souvent à la mort de l'artiste dont j'essayai de retracer la figure</Text>
-                            </View>
-
-                        </View>
-                        
-
-                    </TouchableOpacity> */}
                 {homeData.news.map((news, index) => (
                     <TouchableOpacity key={index} style={styles.container} onPress={() =>
                         navigation.navigate('ReadBook', { image: news.image,

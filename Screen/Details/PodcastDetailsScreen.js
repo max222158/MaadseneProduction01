@@ -16,6 +16,7 @@ import TrackPlayer from 'react-native-track-player';
 import { addToList, addToPodcastRead, removeToList } from '../../features/favorite/favoriteSlice';
 import { addPodcastStored, setPodcastStored } from '../../features/podcast/PodcastSlice';
 import LoaderComponent from '../../Components/LoaderComponent';
+import { setIsUpdate } from '../../features/user/authSlice';
 
 
 
@@ -31,6 +32,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
   const idPodcast = useSelector((state) => state.audio.idPodcast);
   const audioStart = useSelector(state => state.audio.audioStart);
   const favorite = useSelector((state) => state.favorite.favorite);
+  const versionapp = useSelector(state => state.userAuth.versionapp);
     
   const idsong = useSelector((state) => state.audio.idPodcast);
       
@@ -43,6 +45,11 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
     //alert(item.id);
     try {
       const data = await PodcastService.geEpisodesById(item.id);
+
+      if(data.version > versionapp){
+
+        dispatch(setIsUpdate(true));
+      }
       setEpisode(data.podcast);
 
     } catch (e) {
@@ -141,6 +148,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
         {!isExist() ?
                     <TouchableOpacity
+                    sty
                          onPress={()=>{
                             console.log(itemsave);
                             dispatch(addToList(item)); 
@@ -149,7 +157,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
                         
                         }
 
-                        style={{ }}>
+                        style={{marginRight:10 }}>
                         <IconMat name="heart-outline" size={40} color="white" />
 
                     </TouchableOpacity>
@@ -158,7 +166,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
                         //onPress={removeData}
                         onPress={()=>{dispatch(removeToList(item));}}
 
-                        style={{  }}>
+                        style={{marginRight:10 }}>
                         <Icon name="heart" size={40} color="red" />
                     </TouchableOpacity>}
       </View>

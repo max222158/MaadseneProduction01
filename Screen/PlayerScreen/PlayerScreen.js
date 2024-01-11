@@ -108,12 +108,7 @@ const PlayerScreen = ({ navigation, route, goBack,marginB }) => {
 
   
      const pos = TrackPlayer.getBufferedPosition();
-      //var { id, image, auteur, titre, categorie,resume,lien,episode,podcast} = route.params;
-  
-      //let songs1=[{'id':id,'title':titre,'artist':auteur,'url':"https://maadsene.com/podcasts/"+lien,'episode':episode},{'id':48222,'title':'ataya','artist':auteur,'url':"https://maadsene.com/podcasts/"+lien,'episode':4}];
-  
-      //let songs1= [{"auteur": "Thiane Ndiaye", "episode": 0, "id": 71,  "name": "YOU BE YOU", "title": "Bande annonce",'url':"https://maadsene.com/podcasts/"}];
-      useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
         setIsLoading(true);
         if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
           const track = await TrackPlayer.getTrack(event.nextTrack);

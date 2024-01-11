@@ -17,6 +17,7 @@ import { addToList,removeToList } from '../../features/favorite/favoriteSlice';
 import { useDispatch } from 'react-redux';
 import fetchWithTimeout from '../../utils/fetchWithTimeOut';
 import LoaderComponent from '../../Components/LoaderComponent';
+import { URL_BASE } from '../../utils/utils';
 const windowWidth = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const widthWindow = Dimensions.get('window').width;
@@ -60,7 +61,9 @@ export default function CategoryScreen({route, navigation}) {
       setIsLoading(true);
       setError(false);
      let url =
-        'https://mobile.maadsene.com/api/auth/getBookByNameCategory?name='+nom;
+        URL_BASE+'getBookByNameCategory/name/'+nom;
+
+        ///api/getBookByNameCategory/name/:name
 
 
 
@@ -154,13 +157,15 @@ export default function CategoryScreen({route, navigation}) {
                   {/* <Ionicons name='ios-heart' size={32} color="red" on /> */}
                 
                 </ImageBackground>
+                <Text style={{fontFamily:'Poppins-Bold'}} numberOfLines={1}>{item.titre}</Text>
+                <Text style={{fontFamily:'Poppins'}}  numberOfLines={1}>{item.auteur}</Text>
 
                     </View>
         
                 </TouchableOpacity>
 
               {isExist(item) ?
-                  <TouchableOpacity style={{paddingLeft: 10, paddingTop: 5}}
+                  <TouchableOpacity style={{paddingLeft: 0, paddingTop: 5}}
                     onPress={() => onTapRemoveTolist(item)}
                   >
                     <Ionicons
@@ -170,7 +175,7 @@ export default function CategoryScreen({route, navigation}) {
                     />
                     
                   </TouchableOpacity>:
-                  <TouchableOpacity style={{paddingLeft: 10, paddingTop: 5}} 
+                  <TouchableOpacity style={{paddingLeft: 0, paddingTop: 5}} 
                     onPress={() => onTapAddTolist(item)}
                   >
                   <Ionicons

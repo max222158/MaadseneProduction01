@@ -157,6 +157,7 @@ export default function LivreAudioHome({route, navigation}) {
           columnWrapperStyle={{flex: 1}}
           data={item}
           keyExtractor={item => item.id.toString()}
+          style={{paddingBottom:1000}}
           renderItem={({item}) => (
             <View style={{ width: imageWidth, marginBottom: 20,borderRadius:15 }}>
                 <TouchableOpacity
@@ -217,6 +218,7 @@ export default function LivreAudioHome({route, navigation}) {
             </View>
           )}
           numColumns={numColumns}
+
         />
     </View>
   );

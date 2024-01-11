@@ -61,7 +61,7 @@ export const ReadBookAudio = ({ navigation, route, goBack }) => {
 
     var { id, image, auteur, titre, categorie,resume,lien} = route.params;
 
-    let songs1=[{'id':id,'title':titre,'artist':auteur,'url':"https://maadsene.com/livres_numeriques/"+lien}];
+    let songs1=[{'id':id,'title':titre,'artist':auteur,'url':lien}];
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
       if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
@@ -159,7 +159,7 @@ export const ReadBookAudio = ({ navigation, route, goBack }) => {
           <View style={[style.imageWrapper, style.elevation]}>
             <Image
               //   source={item.artwork}
-              source={{uri:"https://maadsene.com/couverture/"+image}}
+              source={{uri:image}}
               style={style.musicImage}
             />
           </View>

@@ -123,7 +123,7 @@ const LivreHome = ({ navigation }) => {
 
             </View>
           </View>
-          <View style={{ flex: 1, marginTop: 20, height: 280 }}>
+          <View style={{ flex: 1, marginTop: 5, height: 280 }}>
 
             <FlatList
               data={books}
@@ -212,7 +212,7 @@ const LivreHome = ({ navigation }) => {
                 Les catégories{' '}
               </Text>
 
-<View style={{ marginTop: 20, marginBottom: 30 }}>
+<View style={{ marginTop: 20, marginBottom: 80 }}>
             <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} showsHorizontalScrollIndicator={false} >
 
               { categoryState.map((category, index) => (

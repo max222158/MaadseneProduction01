@@ -57,7 +57,7 @@ const BooksDetails = ({ navigation, route }) => {
                 <View style={styles.container1} >
                     <View style={{ backgroundColor: "#ffff", width: "100%", height: 100, borderBottomRightRadius: 50, borderBottomLeftRadius: 50 }}></View>
                     <Image
-                        source={{ uri:  item.image }}
+                        source={{ uri: item.image }}
                         resizeMode="cover"
                         style={styles.imageDetails}
                         imageStyle={{ borderWidth: 5, borderColor: "red" }}
@@ -69,21 +69,23 @@ const BooksDetails = ({ navigation, route }) => {
                             <Text style={styles.title}>{item.titre}</Text>
                             <Text style={styles.auteur}>Par {item.auteur}</Text>
                         </View>
-                        <View  style={{justifyContent:'center',alignSelf:'center', backgroundColor:'#eee',
-                         width:windowWidth>500?400:windowWidth-50,  flexDirection: 'row', marginTop: 10 ,borderWidth:1,borderRadius:5,borderColor:'#bbb'}}>
-                            <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2,borderRightWidth:1,borderRightColor:'#bbb' }} onPress={() => navigation.navigate('Category', {
+                        <View style={{
+                            justifyContent: 'center', alignSelf: 'center', backgroundColor: '#eee',
+                            width: windowWidth > 500 ? 400 : windowWidth - 50, flexDirection: 'row', marginTop: 10, borderWidth: 1, borderRadius: 5, borderColor: '#bbb'
+                        }}>
+                            <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2, borderRightWidth: 1, borderRightColor: '#bbb' }} onPress={() => navigation.navigate('Category', {
                                 id: item.id,
                                 nom: item.categorie,
                             })}>
                                 <Text style={styles.categorie} numberOfLines={1}>{item.categorie}</Text>
                             </TouchableOpacity>
 
+
                             {isExist() ?
 
-                                <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2 }} onPress={
+                                <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2, justifyContent: 'center' }} onPress={
                                     () => onTapRemoveTolist(item)}>
-                                    <Text style={styles.categorie} numberOfLines={1}>
-                                        <Ionicons name="ios-heart" size={20} color="#60103b" /> Supprimer</Text>
+                                    <Ionicons name="ios-heart" size={20} color="#60103b" />
 
                                 </TouchableOpacity>
 
@@ -92,11 +94,10 @@ const BooksDetails = ({ navigation, route }) => {
                                 <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2 }} onPress={() =>
                                     onTapAddTolist(item)}>
                                     <Text style={styles.categorie} numberOfLines={1}>
-                                        <Ionicons name="ios-heart-outline" size={20} color="black" style={{marginTop:5}} /> Ajouter</Text>
+                                        <Ionicons name="ios-heart-outline" size={20} color="black" style={{ marginTop: 0 }} /> Ajouter</Text>
 
                                 </TouchableOpacity>
                             }
-
                         </View>
                         <Text style={styles.title_resume}>Résumé</Text>
                         <Text style={styles.resume}>{item.resume}</Text>
@@ -108,27 +109,27 @@ const BooksDetails = ({ navigation, route }) => {
             <View style={styles.bottomView} >
 
 
-                {is_register || item.free == 1 ? 
-                
-                item.ready == 1 ? <TouchableOpacity
-                    style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
-                    onPress={() =>
-                        navigation.navigate('ReadBook', { path: item.epub_mobile_new_reader, idbook: item.id, image: item.image })
-                    }
-                >
+                {is_register || item.free == 1 ?
+
+                    item.ready == 1 ? <TouchableOpacity
+                        style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
+                        onPress={() =>
+                            navigation.navigate('ReadBook', { path: item.epub_mobile_new_reader, idbook: item.id, image: item.image })
+                        }
+                    >
 
 
-                    <Text style={{ color: 'white', fontWeight: "bold", fontSize: 17 }} >Lire le livre</Text>
+                        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 17 }} >Lire le livre</Text>
 
-                </TouchableOpacity> :<TouchableOpacity
-                    style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
-   
-                >
+                    </TouchableOpacity> : <TouchableOpacity
+                        style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
+
+                    >
 
 
-                    <Text style={{ color: 'white', fontWeight: "bold", fontSize: 17 }} >Disponible pour bientôt </Text>
+                        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 17 }} >Disponible pour bientôt </Text>
 
-                </TouchableOpacity>  :
+                    </TouchableOpacity> :
                     <TouchableOpacity
                         style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
                         onPress={() => { navigation.navigate('Subscription') }}
@@ -179,8 +180,8 @@ const styles = StyleSheet.create({
     title: { fontSize: 16, fontWeight: 'bold', paddingLeft: 20, paddingTop: 20, marginBottom: 10, letterSpacing: 1, },
     auteur: { fontSize: 14, paddingLeft: 20, letterSpacing: 1, color: 'gray' },
     title_resume: { fontSize: 17, paddingLeft: 20, paddingTop: 40, fontWeight: 'bold', letterSpacing: 1 },
-    resume: { fontSize: 15, padding: 20, paddingBottom: 100, letterSpacing: 1, lineHeight: 30, fontFamily:'Poppins'},
-    categorie: { fontSize: 15, padding: 15, paddingLeft: 30, paddingRight: 30,  marginTop: 5, borderRadius: 20, letterSpacing: 1, }
+    resume: { fontSize: 15, padding: 20, paddingBottom: 100, letterSpacing: 1, lineHeight: 30, fontFamily: 'Poppins' },
+    categorie: { fontSize: 15, padding: 15, paddingLeft: 30, paddingRight: 30, marginTop: 5, borderRadius: 20, letterSpacing: 1, }
     ,
     MainContainer:
     {

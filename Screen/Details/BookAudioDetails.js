@@ -126,10 +126,9 @@ const BooksAudioDetails = ({ navigation, route }) => {
 
                             {isExist() ?
 
-                                <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2 }} onPress={
+                                <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2 ,justifyContent:'center'}} onPress={
                                     () => onTapRemoveTolist(item)}>
-                                    <Text style={styles.categorie} numberOfLines={1}>
-                                        <Ionicons name="ios-heart" size={20} color="#60103b" /> Supprimer</Text>
+                                        <Ionicons name="ios-heart" size={20} color="#60103b" />
 
                                 </TouchableOpacity>
 
@@ -138,7 +137,7 @@ const BooksAudioDetails = ({ navigation, route }) => {
                                 <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2 }} onPress={() =>
                                     onTapAddTolist(item)}>
                                     <Text style={styles.categorie} numberOfLines={1}>
-                                        <Ionicons name="ios-heart-outline" size={20} color="black" style={{marginTop:5}} /> Ajouter</Text>
+                                        <Ionicons name="ios-heart-outline" size={20} color="black" style={{marginTop:0}} /> Ajouter</Text>
 
                                 </TouchableOpacity>
                             }
@@ -214,7 +213,7 @@ const styles = StyleSheet.create({
     auteur: { fontSize: 14, paddingLeft: 20, letterSpacing: 1, color: 'gray' },
     title_resume: { fontSize: 17, paddingLeft: 20, paddingTop: 40, fontWeight: 'bold', letterSpacing: 1 },
     resume: { fontSize: 15, padding: 20, paddingBottom: 100, letterSpacing: 1, lineHeight: 30, fontFamily:'Poppins'},
-    categorie: { fontSize: 15, padding: 15, paddingLeft: 30, paddingRight: 30,  marginTop: 5, borderRadius: 20, letterSpacing: 1, }
+    categorie: { fontSize: 13, padding: 15, paddingLeft: 30, paddingRight: 30,  marginTop: 5, borderRadius: 20, letterSpacing: 1, }
     ,
     MainContainer:
     {

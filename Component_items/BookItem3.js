@@ -6,11 +6,7 @@ export default BookItem3 = ({item}) => {
     <View style={styles.container}>
       <View style={styles.img_back} >
         <Image source={{uri: item.image}} style={{width:'100%',height:'100%',borderRadius:5}} />
-{/*         <ImageBackground
-          source={{uri: 'https://maadsene.com/couverture/' + item.image}}
-          resizeMode="contain"
-          imageStyle={{ borderRadius: 5,height:200}}
-          style={styles.backgr}></ImageBackground> */}
+
           {item.free == 1?
                                       <View style={{flexWrap: 'wrap',position:'absolute'}}>
                                       <Text style={{alignSelf: 'flex-start',backgroundColor:"white",color:"#60103b",fontFamily:'Poppins-Bold', margin:3,fontSize:11,borderRadius:5,paddingLeft:5,paddingRight:5,paddingTop:2}}>Gratuit</Text>

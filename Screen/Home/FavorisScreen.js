@@ -187,11 +187,7 @@ const FavorisScreen = ({ navigation }) => {
                   </TouchableOpacity>
 
                 </ImageBackground>
-                
 
-{/*                 <Image style={{ borderRadius: 10, width: imageWidth - 5, aspectRatio: 1 / 1.5, backgroundColor: '#007bff1c' }} source={{ uri: "https://maadsene.com/couverture/" + item.image }}>
-                
-                </Image> */}
                   
               </TouchableOpacity>
 

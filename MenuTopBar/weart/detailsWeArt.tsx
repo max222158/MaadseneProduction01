@@ -10,6 +10,7 @@ import {
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import Carrousel from './CarrouselArt';
+import { URL_BASE } from '../../utils/utils';
 
 const height = Dimensions.get('window').height;
 const { width } = Dimensions.get('window');
@@ -93,7 +94,7 @@ const images = [
 
 
       fetch(
-        'https://maadsene.lesastic.com/api/artImage/id/' + id,
+        URL_BASE+'artImage/id/' + id,
         {
           method: 'get',
           headers: {

@@ -111,7 +111,7 @@ export default function CategoryScreen({ route, navigation }) {
   }, [podcastStoredLocal]); */
   const LineItem = ({ title,  items }) => {
     return (
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 0 }}>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                 
         <Text style={{ fontSize: 20,paddingLeft: 15 , fontFamily: 'Poppins-Bold', color: 'black',paddingTop: 20,paddingBottom:10 }}>{title}</Text>
@@ -166,7 +166,7 @@ export default function CategoryScreen({ route, navigation }) {
       }
 
 
-      <Text style={{ fontSize: 20,paddingTop: 20, fontFamily: 'Poppins-Bold', color: 'black', paddingLeft: 15,paddingBottom:10 }}>Sélection de la semaine </Text>
+      <Text style={{ fontSize: 20,paddingTop: 15, fontFamily: 'Poppins-Bold', color: 'black', paddingLeft: 15,paddingBottom:10 }}>Sélection de la semaine </Text>
 
 
 
@@ -198,7 +198,7 @@ export default function CategoryScreen({ route, navigation }) {
                         ))
                     }      
       {!isLoading  && !error?
-        <TouchableOpacity style={{marginTop:20,marginBottom:70}} onPress={()=>{navigation.navigate('podcast_category')}}>
+        <TouchableOpacity style={{marginTop:20,marginBottom:80}} onPress={()=>{navigation.navigate('podcast_category')}}>
         <Text style={{fontSize:17,textAlign:'center',color:'red',marginBottom:20}}>Voir plus</Text>
         </TouchableOpacity>:null}
 

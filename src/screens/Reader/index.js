@@ -465,6 +465,16 @@ function Reader({ navigation, route, goBack }) {
                     console.log(position);
 
                     return;
+
+            case 'NextPreviousTouch':
+                   
+                    setIsVisibleBar(false)
+                    fadeOut();
+                    setStatusV(true);
+                    setvisibleToc(false);
+                    setvisibleSetting(false);
+                    setvisiblebookmark(false);
+                return;
             case 'singleTouch':
                 if (isVisibleBar) {
                     setIsVisibleBar(false)
@@ -657,7 +667,7 @@ function Reader({ navigation, route, goBack }) {
                     }}
                     //cacheEnabled={true}
                     //cacheMode="LOAD_DEFAULT"
-                    incognito={true}
+                    //incognito={true}
                     allowUniversalAccessFromFileURLs={true}
                     allowFileAccessFromFileURLs={true}
                     allowFileAccess
@@ -694,6 +704,7 @@ function Reader({ navigation, route, goBack }) {
             {
                 settingsVisi ? <ModalSettingComponent webView={webview} closeSettingsModal={closeSettingsModal} /> : null
             }
+            {isVisibleBar?
             <Animated.View
                 style={[style.bar, { backgroundColor: isDarkMode ? '#000' : '#ffff', opacity: fadeAnim, }]}>
 
@@ -734,7 +745,10 @@ function Reader({ navigation, route, goBack }) {
 
                 </View>
 
-            </Animated.View>
+            </Animated.View>:null
+            
+            
+            }
             {visibleToc ?
 
                 <SafeAreaView style={{ position: 'absolute', backgroundColor: 'white', top: 60, width: '80%', height: '100%', borderColor: "#dddddd82", borderWidth: 2 }} >
@@ -753,7 +767,7 @@ function Reader({ navigation, route, goBack }) {
                                 onPress={() => {
 
                                     let path1 = path+""+item.href;
-                                    alert(path1);
+                                    //alert(path1);
                                     webview.current.injectJavaScript(`gotoChapterLocationTOC('${idbook}','${path1}');`);
 
                                     //alert(item.id);

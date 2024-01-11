@@ -184,7 +184,7 @@ const PodcastDetails = ({ navigation, route }) => {
                                             <View style={{  width: 160, marginLeft: 15, borderWidth: 0.5, borderColor: '#dddddd',borderRadius: 20 }}>
                                                 <View style={{ flex: 2,width: 160,height:180,borderRadius: 20 }}>
                                                     
-                                                    <ImageBackground source={{uri:"https://maadsene.com/couverture/"+item.image}} resizeMode="cover" imageStyle={{ borderRadius: 10}} style={{ flex: 1, width: null, height: '100%',borderRadius:20 }}>
+                                                    <ImageBackground source={{uri:item.image}} resizeMode="cover" imageStyle={{ borderRadius: 10}} style={{ flex: 1, width: null, height: '100%',borderRadius:20 }}>
                                                         <View style={{backgroundColor:"white",width:35,height:35,padding:5,justifyContent:"center",alignItems:"center",borderRadius:50,margin:7}}>
                                                             <Ionicons name="md-volume-high" size={18} color="black" />
                                                         </View>

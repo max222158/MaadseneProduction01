@@ -63,10 +63,7 @@ export const ReadSoundComponent = ({ navigation, route, goBack }) => {
 
     var { id, image, auteur, titre, categorie,resume,lien,episode,podcast} = route.params;
 
-    //let songs1=[{'id':id,'title':titre,'artist':auteur,'url':"https://maadsene.com/podcasts/"+lien,'episode':episode},{'id':48222,'title':'ataya','artist':auteur,'url':"https://maadsene.com/podcasts/"+lien,'episode':4}];
-    //alert('dial');
-    //let songs1= [{"auteur": "Thiane Ndiaye", "episode": 0, "id": 71,  "name": "YOU BE YOU", "title": "Bande annonce",'url':"https://maadsene.com/podcasts/"+lien}];
-    useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
       if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
         const track = await TrackPlayer.getTrack(event.nextTrack);
         const {title, artwork, auteur} = track;
@@ -178,7 +175,7 @@ export const ReadSoundComponent = ({ navigation, route, goBack }) => {
           <View style={[style.imageWrapper, style.elevation]}>
             <Image
               //   source={item.artwork}
-              source={{uri:"https://maadsene.com/couverture/"+image}}
+              source={{uri:image}}
               style={style.musicImage}
             />
           </View>

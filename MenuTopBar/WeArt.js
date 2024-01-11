@@ -130,6 +130,7 @@ const WeArt = ({ navigation, route }) => {
                   </View>
                 )}
                 numColumns={2}
+                
 
               />
             </>
@@ -137,7 +138,7 @@ const WeArt = ({ navigation, route }) => {
         </View>
         {!isLoading  && !error?
         <TouchableOpacity onPress={()=>{navigation.navigate('weart')}}>
-        <Text style={{fontSize:17,textAlign:'center',color:'red',marginBottom:20}}>Voir plus</Text>
+        <Text style={{fontSize:17,textAlign:'center',color:'red',marginBottom:100}}>Voir plus</Text>
         </TouchableOpacity>:null}
       </ScrollView>
 

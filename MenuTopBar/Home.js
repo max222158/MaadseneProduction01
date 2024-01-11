@@ -41,6 +41,7 @@ const Home = ({ navigation }) => {
   const dispatch = useDispatch();
   const DataAppSelect = useSelector((state) => state.userAuth.dataAppDB);
   const userDataSelect = useSelector((state) => state.userAuth.userDetails);
+  const versionapp = useSelector(state => state.userAuth.versionapp);
 
   const favorite = useSelector((state) => state.favorite.favorite);
   //console.log("--------DataAppSelect--",favorite);
@@ -76,7 +77,7 @@ const Home = ({ navigation }) => {
           dispatch(setCategoryState(data.category));
           //console.log("mollllllllll na cool na",data.livre);
 
-          if (data.update == 1) {
+          if (data.version > versionapp) {
 
             dispatch(setIsUpdate(true));
           }
@@ -197,18 +198,18 @@ const Home = ({ navigation }) => {
   }
   return (
     <SafeAreaView style={{ backgroundColor: '#ffff', flex: 1 }}>
-      <ScrollView style={{ backgroundColor: '#ffff' }}>
+      <ScrollView style={{ backgroundColor: '#ffff'}}>
 
-        <View style={{ flex: 1, padding: 7, backgroundColor: '#ffff', paddingTop: 0 }}>
+        <View style={{ flex: 1,  backgroundColor: '#ffff', paddingTop: 0 }}>
           {/* <HomecarouselComponent /> */}
-          <View style={{ flex: 1, padding: 7, backgroundColor: "#3c020108", paddingTop: 20, marginBottom: 15 }}>
+          <View style={{ flex: 1,  backgroundColor: "#3c020108", paddingTop: 20, marginBottom: 15 }}>
 
             <View >
-              <Text
+            <Text
                 style={{
                   fontSize: 17,
                   color: 'black',
-                  paddingLeft: 1,
+                  paddingLeft: 15,
                   fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
@@ -230,7 +231,7 @@ const Home = ({ navigation }) => {
                 style={{
                   fontSize: 17,
                   color: 'black',
-                  paddingLeft: 13,
+                  paddingLeft: 15,
                   fontFamily:'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
@@ -295,7 +296,7 @@ const Home = ({ navigation }) => {
                 /> :
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                   {dataloader.map((news, index) => (
-                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
+                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 16,  }]}>
                       <View style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
                       <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
                       <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
@@ -567,7 +568,7 @@ const Home = ({ navigation }) => {
               <Text style={{ fontSize: 15, color: 'gray' }}></Text>
             </View>
           </View>
-          <View style={{ marginTop: 20, marginBottom: 30 }}>
+          <View style={{ marginTop: 20, marginBottom: 100 }}>
             <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} showsHorizontalScrollIndicator={false} >
 
               {category.map((category, index) => (
@@ -578,6 +579,7 @@ const Home = ({ navigation }) => {
 
           </View>
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
