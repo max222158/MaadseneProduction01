@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "767309040736-e4n9gduoqb4kjor4512on3iuks3gmhdd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maadseneapp",
+            "certificate_hash": "01938d94f413a676461dd2f6e63495e0c2682ea4"
+          }
+        },
+        {
+          "client_id": "767309040736-mjq5f8amvtfgiijmt0s0uuhbr3nah00n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maadseneapp",
+            "certificate_hash": "823d68b8a9c18c44c5a8545f0ad6bf7d39fd0740"
+          }
+        },
+        {
           "client_id": "767309040736-nvs6leenrkov4l12rilqru89nn2l997a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

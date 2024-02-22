@@ -203,16 +203,17 @@ const MainScreen = ({ navigation }) => {
             }} />
           <Tab.Screen name="Livres Audios" component={LivreAudio}
             options={{
-              tabBarLabelStyle: { padding: 10, fontSize: 12,  fontWeight: "500", letterSpacing: 1 }
+              tabBarLabelStyle: { padding: 10, fontSize: 13,  fontWeight: "500", letterSpacing: 1 }
             }} />
 
-          {/* <Tab.Screen name="Magazines" component={MagasineHome} /> */}
+          
           <Tab.Screen name="Podcasts"
             options={{
               lazy: false,
               tabBarLabelStyle: { padding: 10, fontSize: 13,  fontWeight: "500", letterSpacing: 1 }
             }}
             component={PodcastHome} />
+             <Tab.Screen name="Vidéos" component={VideoHome} />
           <Tab.Screen name="WeART" title="WE ART" component={WeArt}
             options={{
               lazy: false,

@@ -6,10 +6,13 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import IndexScreen from './Screen/IndexScreen';
 //import { store } from './features/store';
 import { Provider } from 'react-redux';
+import messaging from '@react-native-firebase/messaging';
+import {PermissionsAndroid} from 'react-native';
+
 import {
   getUserData,
   clearUserData,
@@ -76,6 +79,10 @@ const store = configureStore({
 let persistor = persistStore(store);
 
 const App = () => {
+
+
+
+  
   const userDataSelect = useSelector(state => state.userAuth.userDetails);
   const isSubscription = useSelector(state => state.billing.isRegister);
   const logged = useSelector(state => state.userAuth.logged);
@@ -175,7 +182,7 @@ const App = () => {
              return data;
            });
        } catch (e) {
-        alert(e);
+       
          if (e == "SyntaxError: JSON Parse error: Unrecognized token '<'") {
    
            //alert(e);
@@ -240,6 +247,31 @@ const App = () => {
     fetchPodcastLocal();
   }, []);
 
+
+  async function requestUserPermission() {
+    try{
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }catch(e){
+
+
+  }
+  }
+
+  const getToken = async() =>{
+    const token = await messaging().getToken()
+    console.log("Token = ",token);
+  }
+  useEffect(()=>{
+    requestUserPermission()
+    getToken()
+  },[])
   return (
     <NavigationContainer>
      <GestureHandlerRootView style={{ flex: 1 }}>

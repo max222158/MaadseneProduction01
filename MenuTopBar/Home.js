@@ -28,9 +28,9 @@ const Home = ({ navigation }) => {
 
 
   const [books, setBooks] = useState([]);
-  
+
   const [free_books, setFree_books] = useState([]);
-  
+
   const [booksAudio, setBooksAudio] = useState([]);
   const [podcast, setPodcast] = useState([]);
   const [booksVideo, setBooksVideo] = useState([]);
@@ -44,13 +44,14 @@ const Home = ({ navigation }) => {
   const versionapp = useSelector(state => state.userAuth.versionapp);
 
   const favorite = useSelector((state) => state.favorite.favorite);
+  const is_register = useSelector((state) => state.billing.isRegister);
   //console.log("--------DataAppSelect--",favorite);
   //setBooks(DataAppSelect.livre);
 
   const fetchDataHome = async () => {
     setIsLoading(true);
     setError(false);
-    let url = URL_BASE+'allBooks1'; //data.access_token.token;
+    let url = URL_BASE + 'allBooks1'; //data.access_token.token;
     try {
 
       await fetchWithTimeout(url, {
@@ -101,7 +102,7 @@ const Home = ({ navigation }) => {
     setIsLoading(true);
     //setError(false);
 
-    let url = URL_BASE+'home'; //data.access_token.token;
+    let url = URL_BASE + 'home'; //data.access_token.token;
     try {
 
       await fetchWithTimeout(url, {
@@ -191,26 +192,26 @@ const Home = ({ navigation }) => {
   if (error) {
     return (
       <View style={{ alignContent: 'center', justifyContent: 'center', flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-        <TouchableOpacity onPress={() => { fetchDataHome();fetchDataNews() }} style={{ alignSelf: 'center', backgroundColor: 'orange', padding: 8, paddingLeft: 35, paddingRight: 35, borderRadius: 50 }}>
+        <TouchableOpacity onPress={() => { fetchDataHome(); fetchDataNews() }} style={{ alignSelf: 'center', backgroundColor: 'orange', padding: 8, paddingLeft: 35, paddingRight: 35, borderRadius: 50 }}>
 
           <Text style={{ color: "white" }}><Ionicons size={20} name="ios-refresh-sharp" color="white" /> Actualiser</Text>
         </TouchableOpacity></View>)
   }
   return (
     <SafeAreaView style={{ backgroundColor: '#ffff', flex: 1 }}>
-      <ScrollView style={{ backgroundColor: '#ffff'}}>
+      <ScrollView style={{ backgroundColor: '#ffff' }}>
 
-        <View style={{ flex: 1,  backgroundColor: '#ffff', paddingTop: 0 }}>
+        <View style={{ flex: 1, backgroundColor: '#ffff', paddingTop: 0 }}>
           {/* <HomecarouselComponent /> */}
-          <View style={{ flex: 1,  backgroundColor: "#3c020108", paddingTop: 20, marginBottom: 15 }}>
+          <View style={{ flex: 1, backgroundColor: "#3c020108", paddingTop: 20, marginBottom: 15 }}>
 
             <View >
-            <Text
+              <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   color: 'black',
                   paddingLeft: 15,
-                  fontFamily:'Poppins-Bold',
+                  fontFamily: 'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Nouveautés
@@ -225,14 +226,14 @@ const Home = ({ navigation }) => {
 
 
 
-          <View style={{ flex: 1, flexDirection: 'row'}}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   color: 'black',
                   paddingLeft: 15,
-                  fontFamily:'Poppins-Bold',
+                  fontFamily: 'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Sélectionnés pour vous
@@ -243,13 +244,13 @@ const Home = ({ navigation }) => {
 
             </View>
           </View>
-          <View style={{ flex: 1, marginTop: 10,backgroundColor: "#3c020108",paddingTop:10}}>
+          <View style={{ flex: 1, marginTop: 10, backgroundColor: "#3c020108", paddingTop: 10 }}>
 
             {
               !isLoading ?
 
                 <FlatList
-                showsHorizontalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
                   data={books}
                   keyExtractor={item => item.id.toString()}
                   renderItem={({ item }) => (
@@ -257,8 +258,8 @@ const Home = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() => {
                           navigation.navigate('DetailsBook', {
-                            item:item
-                            
+                            item: item
+
                           });
                         }}>
                         <BookItem3 item={item} />
@@ -296,7 +297,7 @@ const Home = ({ navigation }) => {
                 /> :
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                   {dataloader.map((news, index) => (
-                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 16,  }]}>
+                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 16, }]}>
                       <View style={{ width: 130, height: 170, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
                       <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
                       <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
@@ -312,14 +313,14 @@ const Home = ({ navigation }) => {
         <View style={{ flex: 1, padding: 7, backgroundColor: '#ffff', paddingTop: 25 }}>
           {/* <HomecarouselComponent /> */}
 
-          <View style={{ flex: 1, flexDirection: 'row'}}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   color: 'black',
                   paddingLeft: 13,
-                  fontFamily:'Poppins-Bold',
+                  fontFamily: 'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Livres gratuits
@@ -327,13 +328,13 @@ const Home = ({ navigation }) => {
             </View>
 
           </View>
-          <View style={{ flex: 1, marginTop: 10,backgroundColor: "#3c020108",paddingTop:10}}>
+          <View style={{ flex: 1, marginTop: 10, backgroundColor: "#3c020108", paddingTop: 10 }}>
 
             {
               !isLoading ?
 
                 <FlatList
-                showsHorizontalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
                   data={free_books}
                   keyExtractor={item => item.id.toString()}
                   renderItem={({ item }) => (
@@ -341,8 +342,8 @@ const Home = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() => {
                           navigation.navigate('DetailsBook', {
-                            item:item
-                            
+                            item: item
+
                           });
                         }}>
                         <BookItem3 item={item} />
@@ -394,15 +395,15 @@ const Home = ({ navigation }) => {
         </View>
 
         <View
-          style={{ flex: 1, padding: 7,paddingTop: 0, backgroundColor: '#ffff', marginTop: 20 }}>
+          style={{ flex: 1, padding: 7, paddingTop: 0, backgroundColor: '#ffff', marginTop: 20 }}>
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 3 }}>
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   color: 'black',
                   paddingLeft: 13,
-                  fontFamily:'Poppins-Bold',
+                  fontFamily: 'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Podcasts recommandés
@@ -414,71 +415,71 @@ const Home = ({ navigation }) => {
           </View>
           <View style={{ flex: 1, marginTop: 20 }}>
             {
-              !isLoading?
-            
-            <FlatList
-            showsHorizontalScrollIndicator={false}
-              data={podcast}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({ item }) => (
-                <View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('detailsPodcast', {
-                        item:item
-                      });
-                    }}>
-                    <BookItemAudio item={item} />
-                  </TouchableOpacity>
-                  {isExist(item) ?
-                    <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
-                      onPress={() => onTapRemoveTolist(item)}
-                    >
-                      <Ionicons
-                        name="ios-bookmark"
-                        size={25}
-                        color="#60103b"
-                      />
+              !isLoading ?
 
-                    </TouchableOpacity> :
-                    <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
-                      onPress={() => onTapAddTolist(item)}
-                    >
-                      <Ionicons
-                        name="ios-bookmark-outline"
-                        size={25}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  }
-                </View>
-              )}
-              horizontal
-            />:
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}  >
-            {dataloader.map((news, index) => (
-              <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
-                <View style={{ width: 150, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
-                <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={podcast}
+                  keyExtractor={item => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate('detailsPodcast', {
+                            item: item
+                          });
+                        }}>
+                        <BookItemAudio item={item} />
+                      </TouchableOpacity>
+                      {isExist(item) ?
+                        <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
+                          onPress={() => onTapRemoveTolist(item)}
+                        >
+                          <Ionicons
+                            name="ios-bookmark"
+                            size={25}
+                            color="#60103b"
+                          />
+
+                        </TouchableOpacity> :
+                        <TouchableOpacity style={{ paddingLeft: 10, paddingTop: 5 }}
+                          onPress={() => onTapAddTolist(item)}
+                        >
+                          <Ionicons
+                            name="ios-bookmark-outline"
+                            size={25}
+                            color="black"
+                          />
+                        </TouchableOpacity>
+                      }
+                    </View>
+                  )}
+                  horizontal
+                /> :
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}  >
+                  {dataloader.map((news, index) => (
+                    <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
+                      <View style={{ width: 150, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
+                      <View style={{ width: 130, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
                       <View style={{ width: 80, height: 15, borderRadius: 0, marginTop: 10, backgroundColor: '#007bff1c' }}></View>
-                   
-              </View>
 
-            ))}
-          </ScrollView>}
+                    </View>
+
+                  ))}
+                </ScrollView>}
           </View>
         </View>
         <View
           style={{ flex: 1, padding: 7, backgroundColor: '#ffff', marginTop: 9 }}>
-          <View style={{ flex: 1, flexDirection: 'row',backgroundColor:'#e9ecef8c',paddingTop:5,paddingBottom:5  }}>
+          <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#e9ecef8c', paddingTop: 5, paddingBottom: 5 }}>
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   color: 'black',
                   paddingLeft: 13,
-                  
-                  fontFamily:'Poppins-Bold',
+
+                  fontFamily: 'Poppins-Bold',
                   fontWeight: "500", letterSpacing: 0.5
                 }}>
                 Vidéos{' '}
@@ -489,8 +490,8 @@ const Home = ({ navigation }) => {
             </View>
           </View>
           <View style={{ flex: 1, marginTop: 20 }}>
-            
-            {!isLoading?<FlatList
+
+            {!isLoading ? <FlatList
               data={booksVideo}
               showsHorizontalScrollIndicator={false}
               keyExtractor={item => item.id.toString()}
@@ -537,26 +538,26 @@ const Home = ({ navigation }) => {
                 </View>
               )}
               horizontal
-            />:
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
-            {dataloader.map((news, index) => (
-              <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
-                <View style={{ width: 130, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
+            /> :
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                {dataloader.map((news, index) => (
+                  <View style={[{ marginTop: 0, paddingBottom: 15, paddingLeft: 10, paddingRight: 10, }]}>
+                    <View style={{ width: 130, height: 150, borderRadius: 10, marginTop: 0, backgroundColor: '#007bff1c' }}></View>
 
-              </View>
+                  </View>
 
-            ))}
-          </ScrollView>}
+                ))}
+              </ScrollView>}
           </View>
         </View>
 
         <View
           style={{ flex: 1, padding: 7, backgroundColor: '#ffff', marginTop: 3 }}>
-          <View style={{ flex: 1, flexDirection: 'row',backgroundColor:'#e9ecef8c',paddingTop:5,paddingBottom:5  }}>
+          <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#e9ecef8c', paddingTop: 5, paddingBottom: 5 }}>
             <View style={{ flex: 2 }}>
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   color: 'black',
                   paddingLeft: 13,
                   fontWeight: "500", letterSpacing: 0.5
@@ -568,18 +569,31 @@ const Home = ({ navigation }) => {
               <Text style={{ fontSize: 15, color: 'gray' }}></Text>
             </View>
           </View>
-          <View style={{ marginTop: 20, marginBottom: 100 }}>
+          <View style={{ marginTop: 20, marginBottom: 20 }}>
             <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} showsHorizontalScrollIndicator={false} >
 
               {category.map((category, index) => (
-                  <CategoryButton category={category} key={index} navigation={navigation} />
+                <CategoryButton category={category} key={index} navigation={navigation} />
               ))}
 
             </ScrollView>
 
           </View>
+          <View style={{ marginTop: 20, marginBottom: 100 }}>
+            {is_register ? null :
+              <View style={{ backgroundColor: '#d3dbe7', padding: 20, borderRadius: 0, marginTop: 15 }}>
+                <Text style={{ fontSize: 16, letterSpacing: 1, color: 'black' }}>Abonnez-vous avec seulement </Text>
+                <Text style={{ fontSize: 14, letterSpacing: 1, color: 'black', fontWeight: '800' }}>1 000 FCFA ou €1.6</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Subscription')} style={{ alignContent: 'center', marginLeft: 12, alignSelf: 'center',
+                 alignItems: 'center', backgroundColor: '#7a00ff', padding: 8, marginTop:30,
+                 paddingLeft: 30, paddingRight: 30, borderRadius: 20 }}>
+                  <Text style={{ color: 'white', fontSize: 13, fontWeight: '500', letterSpacing: 1 }}>S'abonner maintenant</Text>
+                </TouchableOpacity>
+              </View>}
+          </View>
+
         </View>
-        
+
       </ScrollView>
     </SafeAreaView>
   );

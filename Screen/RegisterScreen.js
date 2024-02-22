@@ -603,7 +603,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     padding: 10,
-    paddingLeft: 0
+    paddingLeft: 0,
+    color:'#000'
   }
 });
 

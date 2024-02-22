@@ -94,7 +94,7 @@ const BooksDetails = ({ navigation, route }) => {
                                 <TouchableOpacity style={{ alignItems: "center", flex: 1 / 2 }} onPress={() =>
                                     onTapAddTolist(item)}>
                                     <Text style={styles.categorie} numberOfLines={1}>
-                                        <Ionicons name="ios-heart-outline" size={20} color="black" style={{ marginTop: 0 }} /> Ajouter</Text>
+                                        <Ionicons name="ios-heart-outline" size={20} color="black" style={{ marginTop: 0 }} /> </Text>
 
                                 </TouchableOpacity>
                             }

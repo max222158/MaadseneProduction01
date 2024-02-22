@@ -32,7 +32,7 @@ export const signIn = createAsyncThunk(
 
 
       const response = await fetch(
-        'https://mobile.maadsene.com/api/login1',
+        'https://maadsenemobi.com/api/login1',
         {
           method: 'POST',
           headers: {

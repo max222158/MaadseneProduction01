@@ -138,7 +138,7 @@ const LoginScreen = ({ navigation }) => {
 
 
     try {
-      fetch('https://mobile.maadsene.com/api/login-google', {
+      fetch('https://maadsenemobi.com/api/login-google', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -478,7 +478,8 @@ const styles = StyleSheet.create({
   inputIc: {
     flex: 1,
     padding: 10,
-    paddingLeft: 0
+    paddingLeft: 0,
+    color:'#000'
   },
   buttonTextContainer: {
     flex: 1,

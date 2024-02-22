@@ -12,7 +12,7 @@ const Payment = ({navigation}) => {
         </View>
         <View style={{backgroundColor:'#d3dbe7',padding:20,borderRadius:5,marginTop:15}}>
             <Text style={{fontSize:16,letterSpacing:1,color:'black'}}>Montant total dû</Text>
-            <Text style={{fontSize:14,letterSpacing:1,color:'black',fontWeight:'800'}}>3 000 FCFA ou €4.56</Text>
+            <Text style={{fontSize:14,letterSpacing:1,color:'black',fontWeight:'800'}}>1 000 FCFA ou €1.6</Text>
         </View>
         <View>
             <Text style={{fontSize:16,fontWeight:'900',letterSpacing:1,color:'black',marginTop:20}}>Selectionner un moyen de paiement</Text>
