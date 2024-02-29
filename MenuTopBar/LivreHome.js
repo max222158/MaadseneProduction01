@@ -15,6 +15,7 @@ import NewComponent from '../Components/Home/NewsComponent'
 import { BooksService } from '../services/api/booksService';
 import ItemHorizontalImageText from '../Component_items/Commons/ItemHorizontalImageText';
 import CategoryButton from '../Components/CategoryButtonCompnent';
+import NewsComponent from '../Components/Home/NewsComponent';
 
 
 const LivreHome = ({ navigation }) => {
@@ -26,6 +27,8 @@ const LivreHome = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [databook, setBooksData] = useState([]);
   const [category, setCategory] = useState([]);
+  const [error, setError] = useState(false);
+
   //const userData = useSelector((state)=> state.auth.userData)
   const userData = useSelector((state) => state.userAuth.userDetails);
   const dispatch = useDispatch();
@@ -65,13 +68,15 @@ const LivreHome = ({ navigation }) => {
   }, [bookState]);
 
   const getBookRecent = async() =>{
-
+setError(false);
     try{
+
       const data = await BooksService.getBooksByDate();
       //console.log(data);
       setBooksData(data.books)
     }catch(e){
       setIsLoading(false);
+      setError(true);
     }finally{
       setIsLoading(false);
     }
@@ -85,38 +90,48 @@ const LivreHome = ({ navigation }) => {
 
 
 
+
   }, []);
+  if (error) {
+    return (
+      <View style={{ alignContent: 'center', justifyContent: 'center', flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+        <TouchableOpacity onPress={() => { getBookRecent(); }} style={{ alignSelf: 'center', backgroundColor: 'orange', padding: 8, paddingLeft: 35, paddingRight: 35, borderRadius: 50 }}>
+
+          <Text style={{ color: "white" }}><Ionicons size={20} name="ios-refresh-sharp" color="white" /> Actualiser</Text>
+        </TouchableOpacity></View>)
+  }
   return (
     <SafeAreaView style={{ backgroundColor: '#ffff', flex: 1 }}>
 
       <ScrollView style={{ backgroundColor: '#ffff' }}>
-        <View style={{ paddingLeft: 13 }}>
-          <Text
-            style={{
-              fontSize: 17,
-              fontFamily: "Poppins-Bold",
-              color: 'black',
-              paddingLeft: 13,
-              marginTop: 20,
-              fontWeight: "500", letterSpacing: 0.5
-            }}>
-            Nouveautés
 
-          </Text>
-          <NewComponent />
-        </View>
+      <View >
+      <Text
+          style={{
+            fontSize: 19,
+            color: 'black',
+            marginTop:20,
+            paddingLeft: 13,
+            fontWeight: "500", letterSpacing: 1,
+            fontFamily: 'Poppins-Bold'
+          }}>
+                Nouveautés
+
+              </Text>
+              <NewsComponent />
+            </View>
         <View style={{ flex: 1, padding: 7, backgroundColor: '#ffff', paddingTop: 20 }}>
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 2 }}>
-              <Text
-                style={{
-                  fontSize: 19,
-                  color: 'black',
-                  paddingLeft: 13,
-                  fontWeight: "500", letterSpacing: 1,
-                  fontFamily: 'Poppins-Bold'
-                }}>
-                Livres
+            <Text
+          style={{
+            fontSize: 19,
+            color: 'black',
+            paddingLeft: 13,
+            fontWeight: "500", letterSpacing: 1,
+            fontFamily: 'Poppins-Bold'
+          }}>
+                Livres Pour Vous
               </Text>
             </View>
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -201,18 +216,18 @@ const LivreHome = ({ navigation }) => {
         />}
 
 <Text
-                style={{
-                  fontSize: 17,
-                  color: 'black',
-                  paddingLeft: 13,
-                  paddingTop:20,
-                  fontFamily:'Poppins-Bold',
-                   letterSpacing: 0.5
-                }}>
+          style={{
+            fontSize: 19,
+            paddingTop:27,
+            color: 'black',
+            paddingLeft: 13,
+            fontWeight: "500", letterSpacing: 1,
+            fontFamily: 'Poppins-Bold'
+          }}>
                 Les catégories{' '}
               </Text>
 
-<View style={{ marginTop: 20, marginBottom: 80 }}>
+<View style={{ marginTop: 10, marginBottom: 80 }}>
             <ScrollView style={{ backgroundColor: '#ffff' }} horizontal={true} showsHorizontalScrollIndicator={false} >
 
               { categoryState.map((category, index) => (

@@ -41,7 +41,7 @@ const LoginScreen = ({ navigation }) => {
       alert("Veuillez remplir tous les champs!");
 
     }else{
-      let data = { email: email, password: password };
+      let data = { email: email, password: password, device:"android" };
       dispatch(signIn(data));
     }
     
@@ -155,7 +155,7 @@ const LoginScreen = ({ navigation }) => {
           console.log(json);
 
           if (json.status === "noEmail") {
-            let data = {email: email, password:"email"};
+            let data = {email: email, password:"email", device:"android" };
             //return console.log(data);
             
             //alert("connexion"+JSON.stringify());
@@ -164,7 +164,7 @@ const LoginScreen = ({ navigation }) => {
           } else {
             //alert("Cet adresse email correspond déjà à un compte!");
 
-            let data = {email: email, password:json.password};
+            let data = {email: email, password:json.password, device:"android" };
             //return console.log(data);
             
             //alert("connexion");

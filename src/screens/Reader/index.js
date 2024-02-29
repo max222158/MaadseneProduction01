@@ -13,9 +13,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import style from './style';
 import { _getPages1, _storePages, _storeNote } from './store';
 import { openDatabase } from "react-native-sqlite-storage";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ModalSettingComponent from './ModalSettingComponent';
 import { BooksService } from '../../../services/api/booksService';
+import { addBooksStored, setBooksStored } from '../../../features/favorite/favoriteSlice';
+import { removeItem } from '../../../utils/utils';
 
 const db = openDatabase({
     name: "maadsene",
@@ -49,7 +51,8 @@ const defautThemeReader = {
 const heightWidow = Dimensions.get('window').height;
 const widthWindow = Dimensions.get('window').width;
 function Reader({ navigation, route, goBack }) {
-    const { title, path, idbook, image, imageUrl } = route.params;
+    const { titre,title, path, idbook, image, imageUrl,auteur,free } = route.params;
+    const item =  { titre,title, path, idbook, image, imageUrl,auteur,free };
     const webview = useRef();
     const fontSizes = ["20px", "21px", "22px", "23px"];
     const [fontSizeIndex, setFontSizeIndex] = useState(0); // Tamanho de fonte original (100%)
@@ -103,16 +106,24 @@ function Reader({ navigation, route, goBack }) {
 
    
 
-    const isEpubReader = useSelector(state => state.userAuth.isEpubReader);
+    const url_webview = useSelector(state => state.userAuth.urlWebview);
+    const booksStoredLocal = useSelector((state) => state.favorite.booksStoredLocal);
+    const is_register = useSelector((state) => state.billing.isRegister);
 
     let bookSend = { id: idbook, path: path };
-
+    const dispatch = useDispatch(); 
 
     function changeBrightness(value) {
         ScreenBrightness.setBrightness(value);
         AsyncStorage.setItem('brightness', value.toString())
     }
+
+    const isExistInLocal = () => {
+        return booksStoredLocal?.find(item => item.idbook === idbook) !== undefined;
+    };
+    
     const createTables = () => {
+        
         db.transaction(txn => {
             txn.executeSql(
                 `CREATE TABLE IF NOT EXISTS bookmark (id INTEGER PRIMARY KEY AUTOINCREMENT, bookmark json,idbook VARCHAR(30))`,
@@ -233,6 +244,17 @@ function Reader({ navigation, route, goBack }) {
     }, [pathUrl]);
 
     useEffect(() => {
+        if(!is_register && item.free == 0){
+            navigation.goBack();
+        }
+
+
+
+    },[]);
+
+
+
+    useEffect(() => {
     
     
         // Stocker la valeur actuelle de item dans la référence
@@ -245,6 +267,51 @@ function Reader({ navigation, route, goBack }) {
             BooksService.updateNumberOfViewBooks(idbook);
     
         }, 10000);
+    
+        // Nettoyer la référence si le composant est démonté avant que le setTimeout ne soit atteint.
+        return () => clearTimeout(timeoutId);
+      }, []);
+
+      useEffect(() => {
+    
+        //console.log(item);
+        // Stocker la valeur actuelle de item dans la référence
+
+        const timeoutId = setTimeout(() => {
+          // Comparer la valeur actuelle de item avec la valeur stockée dans la référence
+
+          //alert(isExistInLocal());
+          console.log("--statebook--",booksStoredLocal);
+          if (isExistInLocal()) {
+            
+
+
+            const newArray = booksStoredLocal?.filter(item => item.idbook !== idbook);
+            dispatch(setBooksStored([item, ...newArray]));
+            BooksService.storeBookToLocal('local_books', [item, ...newArray]);
+    
+            
+    
+          } else {
+    
+            if (booksStoredLocal?.length > 2) {
+    
+               const newState = booksStoredLocal.slice(0, -1);
+              dispatch(setBooksStored([item, ...newState]));
+              BooksService.storeBookToLocal('local_books', [item, ...newState]); 
+    
+    
+            } else {
+               dispatch(addBooksStored(item));
+              BooksService.storeBookToLocal('local_books', [item, ...booksStoredLocal]); 
+            }
+    
+          }
+
+          //removeItem('local_books');
+          //dispatch(setBooksStored([]));
+    
+        }, 5000);
     
         // Nettoyer la référence si le composant est démonté avant que le setTimeout ne soit atteint.
         return () => clearTimeout(timeoutId);
@@ -653,7 +720,7 @@ function Reader({ navigation, route, goBack }) {
                     /*  source={{ uri: 'http://localhost:3000' }} */
                     //source={{html: htmlCode}}
                     /* source={{ uri: 'https://araf.newspreneuriat.com/public/cloud-reader2/index.html?epub=epub_content%2Fnuit_de_noce1' }} */
-                    source={{ uri: "https://reader.maadsenemobi.com?path" }}
+                    source={{ uri: url_webview+"?path" }}
                     /*                          source={{
                                             uri: `file:///android_asset/cloud-reader/index.html?epub=${uri}` }}   */
                     /*  source={{ uri: 'file:///data/user/0/com.araf/files/html/index.html' }} */
@@ -730,7 +797,7 @@ function Reader({ navigation, route, goBack }) {
                             <Icon name="text-outline" size={30} color={isDarkMode ? '#FFF' : '#000'} />
                         </TouchableOpacity>
 
-                        <Text style={[{ fontSize: 20, fontWeight: '500' }, fontStyle]}>{title}</Text>
+                        
 
                     </View>
                     <View style={{ flex: 1 / 3, flexDirection: 'row', alignItems: 'flex-end', alignContent: 'flex-end', justifyContent: 'flex-end' }}>

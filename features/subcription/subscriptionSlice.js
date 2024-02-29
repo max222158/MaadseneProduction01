@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk  } from '@reduxjs/toolkit'
 import { useSelector,useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const initialState = {
-  isRegister: false
+  isRegister: false,
+  remaining_day:0,
 
 }
 
@@ -83,7 +84,12 @@ export const subscriptionSlice = createSlice({
         AsyncStorage.setItem('userRegistration', JSON.stringify(action.payload));
 
 
-    } 
+    } ,
+    setReamingDay:(state,action)=>{
+
+
+      state.remaining_day = action.payload; 
+    }
         
   },
 
@@ -106,6 +112,6 @@ export const subscriptionSlice = createSlice({
 
   },
 });
-export const { setRegistration,saveRegistration} = subscriptionSlice.actions;
+export const { setRegistration,saveRegistration,setReamingDay} = subscriptionSlice.actions;
 export default subscriptionSlice.reducer;
 

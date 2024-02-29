@@ -21,8 +21,11 @@ module.exports = async function () {
     });
 
     TrackPlayer.addEventListener('remote-stop', () => {
-      TrackPlayer.destroy()
+      TrackPlayer.stop();
     });
   } catch (error) { }
 
 };
+
+
+

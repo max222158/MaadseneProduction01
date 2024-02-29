@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, StyleSheet, Alert } from 'react-native';
 import { ScrollView, View, Image, Text, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const windowWidth = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-import { addToList, removeToList } from '../../../features/favorite/favoriteSlice';
+import { addToList, removeToList, setFavorite } from '../../../features/favorite/favoriteSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
 const BooksDetails = ({ navigation, route }) => {
 
     const dispatch = useDispatch();
-    const favorite = useSelector((state) => state.favorite.favorite);
+    let favorite = useSelector((state) => state.favorite.favorite);
     const is_register = useSelector((state) => state.billing.isRegister);
     var { item } = route.params;
     /*     let item =  {
@@ -38,15 +38,67 @@ const BooksDetails = ({ navigation, route }) => {
     }
 
     const onTapAddTolist = (movie) => {
-
+        console.log(favorite);
+    
+        if(favorite.filter(item => item.support === movie.support).length>=30){
+    /*       let newState = favorite.filter(item => item.support !== 'Livre');
+          console.log(favorite.filter(item => item.support !== 'Livre').length);
+          // Retirer le dernier élément du tableau filtré
+          newState.pop(); */
+    
+    // Trouver l'index du dernier élément avec support "Livre"
+          //const indexToRemove = favorite.map(item => item.support).lastIndexOf("Livre");
+          let lastIndex = null;
+    
+          // Parcours du tableau en commençant par la fin
+          for (let i = favorite.length - 1; i >= 0; i--) {
+              // Vérification si le support est "Livre"
+              if (favorite[i].support === movie.support) {
+                  // Si c'est le cas, on sauvegarde l'index et on arrête la boucle
+                  lastIndex = i;
+                  break;
+              }
+          }
+          //favorite.splice(lastIndex, 1);
+          favorite = favorite.filter((item, i) => i !== lastIndex);
+    
+          // Affichage de l'index du dernier élément avec support "Livre"
+          console.log("L'index du dernier élément avec support 'Livre' est :", lastIndex);
+          //alert("--last== "+lastIndex + '--'+favorite.length);
+    
+          dispatch(setFavorite(favorite));
+    
+          
+    
+          // Supprimer l'élément correspondant à cet index s'il existe
+    /*       if (indexToRemove !== -1) {
+              favorite.splice(indexToRemove, 1);
+          }
+     */
+        
+         // alert(favorite.filter(item => item.support === movie.support).length);
+          //dispatch(setFavorite(favoris_filtres));
+          //console.log(newState);
+    
+    
+        }
+    
+    
+    
         dispatch(addToList(movie));
         //console.log("list favorite",favorite)
-    }
+      }
     const onTapRemoveTolist = (movie) => {
 
         dispatch(removeToList(movie));
         //console.log("list favorite",favorite)
     }
+
+    React.useEffect(()=>{
+
+        //alert(JSON.stringify(item));
+
+    },[]);
     return (
 
         <View style={styles.MainContainer}>
@@ -114,7 +166,8 @@ const BooksDetails = ({ navigation, route }) => {
                     item.ready == 1 ? <TouchableOpacity
                         style={{ backgroundColor: "#60103b", marginTop: 15, marginBottom: 15, width: 300, alignItems: 'center', padding: 15, borderRadius: 10 }}
                         onPress={() =>
-                            navigation.navigate('ReadBook', { path: item.epub_mobile_new_reader, idbook: item.id, image: item.image })
+                            navigation.navigate('ReadBook', { path: item.epub_mobile_new_reader, idbook: item.id,
+                                 image: item.image, title:item.titre,titre:item.titre,auteur:item.auteur,free:item.free })
                         }
                     >
 

@@ -62,3 +62,9 @@ export const saveUserData = (data) =>  {
 
 
 }
+
+export function setUserMyCategory(data) {
+	
+	data = JSON.stringify(data);
+	return AsyncStorage.setItem('userMyCategory', data);
+}

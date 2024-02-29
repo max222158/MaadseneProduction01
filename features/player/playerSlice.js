@@ -8,6 +8,7 @@ const initialState = {
   title:'',
   artist:'',
   color:'#bbb',
+  episode:0,
   audioStart:false,
   idPodcast:0,
   itemPodcast:{},
@@ -88,6 +89,15 @@ export const playerSlice = createSlice({
         
       },
 
+      setEpisode: (state, action) => {
+
+      
+        state.episode = action.payload;  
+  
+  
+        
+      },
+
 
       setImage: (state, action) => {
 
@@ -162,6 +172,8 @@ export const playerSlice = createSlice({
         
   },
 });
-export const { setAudio, setSongType,setPausePlay,setPausePlay1, setPlayerOff,setTitle, setColor,setItemPodcast, setIdPodcast, setAudioStart,  setPlayer,setImage,setMinimized,setIdSong,setArtist} = playerSlice.actions;
+export const { setAudio, setSongType,setPausePlay,setPausePlay1, setPlayerOff,setTitle,
+   setColor,setItemPodcast, setIdPodcast, setAudioStart,  setPlayer,setImage,
+   setMinimized,setIdSong,setArtist,setEpisode} = playerSlice.actions;
 export default playerSlice.reducer;
 

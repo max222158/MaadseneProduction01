@@ -50,8 +50,9 @@ const PlayerAudio = () => {
   const color = useSelector((state) => state.audio.color);
   const idPodcast = useSelector((state) => state.audio.idPodcast);
   const podcastStoredLocal = useSelector((state) => state.podcast.podcastStoredLocal);
+  const episode1 = useSelector((state) => state.audio.episode);
   const itemRef = useRef(item);
-
+  const isFirstRun = useRef(true);
 
 
   const dispatch = useDispatch();
@@ -106,6 +107,9 @@ const PlayerAudio = () => {
 
   }, [idPodcast]);
 
+
+
+
   useEffect(() => {
           TrackPlayer.setupPlayer();
 
@@ -114,7 +118,7 @@ const PlayerAudio = () => {
 
 
     } else {
-      addAlbumPlayer(album);
+      addAlbumPlayer(album,episode1);
 
     }
 

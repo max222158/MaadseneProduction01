@@ -118,7 +118,7 @@ export default function CategoryPodcastScreen({ route, navigation }) {
             </View> :  !isLoading && !error && !endOfList ?
         <TouchableOpacity onPress={()=>{setPage(page+1); }}>
         <Text style={{fontSize:17,textAlign:'center',color:'red',marginBottom:20}}>Voir plus</Text>
-        </TouchableOpacity>:null
+        </TouchableOpacity>:<Text style={{alignSelf:'center',color:'green'}}> - Fin de liste - </Text>
         );
       };
 

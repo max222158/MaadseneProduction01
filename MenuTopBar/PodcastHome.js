@@ -138,7 +138,14 @@ export default function CategoryScreen({ route, navigation }) {
     );
 };
 
+if (error) {
+  return (
+    <View style={{ alignContent: 'center', justifyContent: 'center', flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+      <TouchableOpacity onPress={() => {     getDataPodcastOfWeek();}} style={{ alignSelf: 'center', backgroundColor: 'orange', padding: 8, paddingLeft: 35, paddingRight: 35, borderRadius: 50 }}>
 
+        <Text style={{ color: "white" }}><Ionicons size={20} name="ios-refresh-sharp" color="white" /> Actualiser</Text>
+      </TouchableOpacity></View>)
+}
 
   return (
     <ScrollView style={[styles.bg,{ }]}>

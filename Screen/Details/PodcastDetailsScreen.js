@@ -10,13 +10,13 @@ import EpisodeComponent from '../../Components/EpisodeComponent';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
-import { setArtist, setAudio, setAudioStart, setColor, setIdPodcast, setImage, setItemPodcast, setMinimized, setPlayerOff, setSongType, setTitle } from '../../features/player/playerSlice';
+import { setArtist, setAudio, setAudioStart, setColor, setEpisode, setIdPodcast, setImage, setItemPodcast, setMinimized, setPlayerOff, setSongType, setTitle } from '../../features/player/playerSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import TrackPlayer from 'react-native-track-player';
-import { addToList, addToPodcastRead, removeToList } from '../../features/favorite/favoriteSlice';
+import { addToList, addToPodcastRead, removeToList, setFavorite } from '../../features/favorite/favoriteSlice';
 import { addPodcastStored, setPodcastStored } from '../../features/podcast/PodcastSlice';
 import LoaderComponent from '../../Components/LoaderComponent';
 import { setIsUpdate } from '../../features/user/authSlice';
+import TrackPlayer from "react-native-track-player";
 
 
 
@@ -26,12 +26,12 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [playerLoading, setPlayerLoading] = useState(false);
   const [click, setClick] = useState(-1);
-  const [episode, setEpisode] = useState([]);
+  const [episode, setEpisode1] = useState([]);
   const album = useSelector((state) => state.audio.audio);
   const podcastStoredLocal = useSelector((state) => state.podcast.podcastStoredLocal);
   const idPodcast = useSelector((state) => state.audio.idPodcast);
   const audioStart = useSelector(state => state.audio.audioStart);
-  const favorite = useSelector((state) => state.favorite.favorite);
+  let favorite = useSelector((state) => state.favorite.favorite);
   const versionapp = useSelector(state => state.userAuth.versionapp);
     
   const idsong = useSelector((state) => state.audio.idPodcast);
@@ -50,7 +50,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
         dispatch(setIsUpdate(true));
       }
-      setEpisode(data.podcast);
+      setEpisode1(data.podcast);
 
     } catch (e) {
 
@@ -61,6 +61,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
   }
 
+
   const isExistInLocal = () => {
     return podcastStoredLocal.find(item => item.id === idPodcast) !== undefined;
   };
@@ -70,7 +71,57 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
     return favorite.find(item => item.id === id) !== undefined;
   };
+  const onTapAddTolist = (movie) => {
+    console.log(favorite);
 
+    if(favorite.filter(item => item.support === movie.support).length>=30){
+/*       let newState = favorite.filter(item => item.support !== 'Livre');
+      console.log(favorite.filter(item => item.support !== 'Livre').length);
+      // Retirer le dernier élément du tableau filtré
+      newState.pop(); */
+
+// Trouver l'index du dernier élément avec support "Livre"
+      //const indexToRemove = favorite.map(item => item.support).lastIndexOf("Livre");
+      let lastIndex = null;
+
+      // Parcours du tableau en commençant par la fin
+      for (let i = favorite.length - 1; i >= 0; i--) {
+          // Vérification si le support est "Livre"
+          if (favorite[i].support === movie.support) {
+              // Si c'est le cas, on sauvegarde l'index et on arrête la boucle
+              lastIndex = i;
+              break;
+          }
+      }
+      //favorite.splice(lastIndex, 1);
+      favorite = favorite.filter((item, i) => i !== lastIndex);
+
+      // Affichage de l'index du dernier élément avec support "Livre"
+      console.log("L'index du dernier élément avec support 'Livre' est :", lastIndex);
+      //alert("--last== "+lastIndex + '--'+favorite.length);
+
+      dispatch(setFavorite(favorite));
+
+      
+
+      // Supprimer l'élément correspondant à cet index s'il existe
+/*       if (indexToRemove !== -1) {
+          favorite.splice(indexToRemove, 1);
+      }
+ */
+    
+     // alert(favorite.filter(item => item.support === movie.support).length);
+      //dispatch(setFavorite(favoris_filtres));
+      //console.log(newState);
+
+
+    }
+
+
+
+    dispatch(addToList(movie));
+    //console.log("list favorite",favorite)
+  }
   useEffect(() => {
 
     //console.log(idPodcast);
@@ -118,7 +169,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
   }, [audioStart]);
 
   const playAudio = async () => {
-
+    dispatch(setEpisode(0));
     setClick(1);
     setPlayerLoading(true);
     dispatch(setIdPodcast(item.id));
@@ -137,6 +188,39 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
 
   }
+  const playAudioEpisode = async (index) => {
+    dispatch(setEpisode(index));
+    if(item.id != idPodcast){
+      setClick(1);
+      setPlayerLoading(true);
+      dispatch(setIdPodcast(item.id));
+      dispatch(setMinimized(false));
+      dispatch(setAudio(episode));
+      dispatch(setArtist(item.artist));
+      dispatch(setImage(item.image));
+      dispatch(setColor(item.color));
+  
+      dispatch(setItemPodcast(item));
+      dispatch(setSongType("Podcast"));
+      //
+      dispatch(setAudioStart(true));
+      dispatch(setPlayerOff(false));
+      setPlayerLoading(false);
+    
+
+    }else{
+      dispatch(setMinimized(false));
+      await TrackPlayer.skip(index);
+      await TrackPlayer.play();
+    }
+
+    //alert(index);
+    //alert(idPodcast +"" + item.id);
+
+
+
+
+  }
   return (
     <View style={{ flex: 1, backgroundColor: '#ffff' }}>
 
@@ -148,10 +232,10 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
         {!isExist() ?
                     <TouchableOpacity
-                    sty
+                    
                          onPress={()=>{
                             console.log(itemsave);
-                            dispatch(addToList(item)); 
+                            onTapAddTolist(item);
                         
                         }
                         
@@ -191,8 +275,9 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
           {
             episode.map((epi, index) => (
 
-
+              <TouchableOpacity onPress={()=>{playAudioEpisode(index)}}>
               <EpisodeComponent item={epi} color={item.color} />
+              </TouchableOpacity>
             )
 
 
@@ -214,7 +299,7 @@ const PodcastDetailsScreen = ({ navigation, route }) => {
 
       </View>
       {
-        playerLoading ? <LoaderComponent /> : null
+        playerLoading ? <LoaderComponent  /> : null
       }
 
 

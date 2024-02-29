@@ -9,7 +9,7 @@ export const  initializedPlayer = async(album) =>{
 
         await TrackPlayer.add(album).then(async () => {
 
-            await TrackPlayer.play();
+            //await TrackPlayer.play();
         });
     });
 
@@ -18,12 +18,17 @@ export const  initializedPlayer = async(album) =>{
 }
 
 
-export const addAlbumPlayer = async(album) =>{
+export const addAlbumPlayer = async(album,index) =>{
 
 
     await TrackPlayer.setQueue(album).then(async () => {
+      await TrackPlayer.skip(index).then(async ()=>{
 
         await TrackPlayer.play();
+
+      });
+
+      
       });
 
 }

@@ -137,11 +137,11 @@ const MainScreen = ({ navigation }) => {
           
         </View> */}
       <View style={{ flexDirection: 'row', padding: 8 }}>
-        <Image source={require("../../assets/logo-app2.png")} style={{ marginLeft: 5 }} />
-        <Text style={{ fontSize: 22, color: 'black', marginLeft: 8, paddingTop: 3,fontFamily:'LilitaOne-Regular' }}>MAADSENE</Text>
+        <Image  source={require("../../assets/logo-app2.png")} style={{ marginLeft: 5,width:50,height:34,  }} resizeMode='contain'  />
+        <Text style={{ fontSize: 20, color: '#3d0302', marginLeft: 8, paddingTop: 6,fontFamily:'LilitaOne-Regular' }}>MAAD<Text style={{color:'#ff914c'}}>SENE</Text></Text>
         {is_register == false ?
-          <TouchableOpacity onPress={() => navigation.navigate('Subscription')} style={{ alignContent: 'center', marginLeft: 12, alignSelf: 'center', alignItems: 'center', backgroundColor: '#7a00ff', padding: 8, paddingLeft: 30, paddingRight: 30, borderRadius: 20 }}>
-            <Text style={{ color: 'white', fontSize: 15, fontWeight: '700', letterSpacing: 1 }}>S'abonner</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Subscription')} style={{ alignContent: 'center', marginLeft: 12, alignSelf: 'center', alignItems: 'center', backgroundColor: '#7a00ff', padding: 8, paddingLeft: 25, paddingRight: 25, borderRadius: 20 }}>
+            <Text style={{ color: 'white', fontSize: 12, fontWeight: '700', letterSpacing: 1 }}>S'abonner</Text>
           </TouchableOpacity> : null
         }
 
@@ -261,7 +261,7 @@ const SettingsScreenTop = ({ navigation }) => {
 
   React.useEffect(() => {
 
-    alert('Settings top')
+  
   });
   return (
     <View>

@@ -7,12 +7,15 @@ import {logout, saveLogged, saveUser} from '../../features/user/authSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { clearUserData } from '../../utils/utils';
+import { setAudioStart } from '../../features/player/playerSlice';
+import TrackPlayer from 'react-native-track-player';
 
 export default function SettingsScreen() {
   const navigation = useNavigation(); 
 
   const userDataSelect = useSelector((state)=> state.userAuth.userDetails);
   const is_register = useSelector((state) => state.billing.isRegister);
+  const days = useSelector((state) => state.billing.remaining_day);
   console.log(userDataSelect.user);
   const dispatch = useDispatch();
     const disconnect = () => {
@@ -20,7 +23,10 @@ export default function SettingsScreen() {
       dispatch(saveUser([]));
       dispatch(saveLogged(false));
       clearUserData();
-            dispatch(logout());
+      dispatch(logout());
+
+      dispatch(setAudioStart(false));
+      TrackPlayer.stop();
 
     }
     function calculateDaysDifference(startDate, endDate) {
@@ -78,7 +84,7 @@ export default function SettingsScreen() {
           <View style={[styles.infoBoxWrapper,{backgroundColor:"#60103a"}]}>
               <View style={styles.infoBox}>
                 <Text style={styles.text_abon}>Abonnement: {is_register? " En cours": " Non"} {/* {userDataSelect.user.subcription} */}</Text>
-                {is_register?<Text style={styles.text_abon}>Nombre de jours restants: <Text style={{fontWeight:'bold',fontSize:18}}>{calculateDaysDifference(new Date, userDataSelect.user.end_date_subcription)}</Text></Text>:null}
+                {is_register?<Text style={styles.text_abon}>Nombre de jours restants: <Text style={{fontWeight:'bold',fontSize:18}}>{days <= 0?"- -":days}</Text></Text>:null}
               </View>
           </View> 
 
@@ -143,7 +149,7 @@ export default function SettingsScreen() {
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={disconnect}
-              style={{marginBottom:25}}
+              style={{marginBottom:75}}
 
             >
               <View style={styles.button_deconn}>

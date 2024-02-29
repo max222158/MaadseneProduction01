@@ -5,7 +5,8 @@ const initialState = {
   loading: false,
   favorite:[],
   test:{},
-  lastPodcastRead:[]
+  lastPodcastRead:[],
+  booksStoredLocal: [],
 
 }
 
@@ -17,7 +18,15 @@ export const favoriteSlice = createSlice({
 
     addToList: (state, action) => {
       
-      state.favorite = [...state.favorite, action.payload];  
+      state.favorite = [action.payload, ...state.favorite];  
+      //state.favorite = action.payload;
+      //console.log("addtolisttttttttttttttttttttttttttt")
+
+    },
+
+    setFavorite: (state, action) => {
+      
+      state.favorite = action.payload;  
       //state.favorite = action.payload;
       //console.log("addtolisttttttttttttttttttttttttttt")
 
@@ -36,11 +45,29 @@ export const favoriteSlice = createSlice({
       //console.log("addtolisttttttttttttttttttttttttttt")
 
     },
+    addBooksStored: (state, action) => {
+
+
+
+      state.booksStoredLocal = [action.payload, ...state.booksStoredLocal];
+      //state.favorite = action.payload;
+      //console.log("addtolisttttttttttttttttttttttttttt")
+
+
+
+
+
+    },
+    setBooksStored: (state, action) => {
+
+      state.booksStoredLocal = action.payload;
+
+    }
         
   },
 
 
 });
-export const { addToList,removeToList,addToPodcastRead } = favoriteSlice.actions;
+export const { addToList,removeToList, setFavorite, addToPodcastRead,addBooksStored,setBooksStored } = favoriteSlice.actions;
 export default favoriteSlice.reducer;
 

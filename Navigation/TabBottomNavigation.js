@@ -92,7 +92,7 @@ export default function TabBottomNavigation() {
             return <View><Ionicons name={iconName} size={size} color={color} /></View>;
           },
           tabBarActiveTintColor: '#60103b',
-          tabBarInactiveTintColor: 'black',
+          tabBarInactiveTintColor: '#7a7a7a',
           tabBarHideOnKeyboard:true,
           
         })}

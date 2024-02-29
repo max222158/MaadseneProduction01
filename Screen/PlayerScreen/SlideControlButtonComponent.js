@@ -9,7 +9,7 @@ import TrackPlayer, { State, usePlaybackState, useProgress } from 'react-native-
 import { skipToNext, skipToPrevious } from '../../services/player/PlayerService';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToList, removeToList } from '../../features/favorite/favoriteSlice';
-import { setPausePlay } from '../../features/player/playerSlice';
+import { setAudio, setPausePlay } from '../../features/player/playerSlice';
 
 
 
@@ -45,6 +45,7 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
             //dispatch(setPausePlay(0));
             TrackPlayer.pause();
             TrackPlayer.stop();
+            dispatch(setAudio([]));
         }else{
             //dispatch(setPausePlay(1))
         }
@@ -57,7 +58,7 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
         if(playBackState.state == "playing"){
             dispatch(setPausePlay(0));
         }        
-        if(playBackState.state == "paused"){
+        if(playBackState.state == "paused" || playBackState.state == "ready"){
 
             dispatch(setPausePlay(1))
         }
@@ -91,13 +92,13 @@ const SlideControlButtonComponent = ({ repeter,  replay, chargement, loadingPlay
 
             }}>
             
-                <TouchableOpacity onPress={() => {
+{/*                 <TouchableOpacity onPress={() => {
 
 
                 }} style={{ textAlign: 'center', alignItems: 'center' }}>
-                    <Icon size={30} name="share-outline" color='white' />
+                    <Text> </Text>
                     {/* <Text style={{ color: mode == "clair" ? "black" : 'white' }}>Chapitres</Text> */}
-                </TouchableOpacity>
+                {/* </TouchableOpacity>  */}
 
 
                 {!isExist() ?

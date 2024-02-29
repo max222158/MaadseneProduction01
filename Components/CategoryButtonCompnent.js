@@ -28,9 +28,10 @@ const CategoryButton = ({ category, navigation }) => (
       paddingLeft: 20,
       paddingRight: 15,
       paddingBottom: 13,
-      paddingTop: 12,
+      paddingTop: 7,
       borderRadius: 20,
-      marginLeft: 20,
+      marginRight: 10,
+      marginLeft:10,
       backgroundColor: getRandomDarkColor(),
       color: 'white',
     }}

@@ -15,7 +15,9 @@ const initialState = {
   isUpdate:false,
   versionapp:3,
   homeData:[],
-  isEpubReader:true
+  isEpubReader:true,
+  urlWebview:"https://reader.maadsenemobi.com",
+  urlBase:"https://maadsenemobi.com/api/"
 }
 
 
@@ -32,7 +34,7 @@ export const signIn = createAsyncThunk(
 
 
       const response = await fetch(
-        'https://maadsenemobi.com/api/login1',
+        'https://mobile.maadsene.com/api/login1',
         {
           method: 'POST',
           headers: {
@@ -51,6 +53,11 @@ export const signIn = createAsyncThunk(
       if (data.hasOwnProperty('error')) {
         thunkAPI.dispatch(setError(true));
       }
+      thunkAPI.dispatch(setUrlWebview(data.url_webview));
+      AsyncStorage.setItem('url_webview', JSON.stringify(data.url_webview));
+
+
+
       /* 		  if(data.error){
               
              alert("Identifiants incorrects!"); 
@@ -297,6 +304,16 @@ export const userSlice = createSlice({
       state.isEpubReader = action.payload
 
     },
+    setUrlWebview:(state, action) => {
+
+      state.urlWebview = action.payload
+
+    },
+    setUrlBase:(state, action) => {
+
+      state.urlBase = action.payload
+
+    }
   },
 
 
@@ -339,7 +356,7 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setHomeData,setIsEpubReader, saveUser, saveDataApp, loggedUser, saveLogged, setError,setIsRegister,setBookState,setCategoryState,setIsUpdate } = userSlice.actions;
+export const { setHomeData,setIsEpubReader, saveUser, saveDataApp,setUrlWebview,setUrlBase, loggedUser, saveLogged, setError,setIsRegister,setBookState,setCategoryState,setIsUpdate } = userSlice.actions;
 export const userDetails = (state) => state.userAuth.userDetails;
 export const userSelector = state => state.userAuth
 //export const loading = (state) => state.userAuth.loading;
