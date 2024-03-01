@@ -87,8 +87,8 @@ android {
         applicationId "com.maadseneapp"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 106
-        versionName "1.0.6"
+        versionCode 108
+        versionName "1.0.8"
         resConfigs "en", "fr"
 
     }

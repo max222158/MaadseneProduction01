@@ -53,7 +53,7 @@ export const signIn = createAsyncThunk(
       if (data.hasOwnProperty('error')) {
         thunkAPI.dispatch(setError(true));
       }
-      thunkAPI.dispatch(setUrlWebview(data.url_webview));
+      
       AsyncStorage.setItem('url_webview', JSON.stringify(data.url_webview));
 
 
@@ -70,7 +70,7 @@ export const signIn = createAsyncThunk(
       //console.log("logged === ",islogged.userAuth.logged);
       if (data.hasOwnProperty('credential')) {
         //return console.log("00000000000000000000000");
-
+        thunkAPI.dispatch(setUrlWebview(data.url_webview));
         if (data.credential == "valide") {
 
           //return console.log("00000000000000000000000");

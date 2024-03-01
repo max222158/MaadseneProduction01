@@ -7,7 +7,7 @@ import { BookItemAudio } from '../Component_items/BookItemAudio';
 import { VideoItem } from '../Component_items/VideoItem';
 import BookItem3 from '../Component_items/BookItem3';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToList, removeToList } from '../features/favorite/favoriteSlice';
+import { addToList, removeToList, setFavorite } from '../features/favorite/favoriteSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LogBox } from 'react-native';
 import { getDataDB } from '../features/user/authSlice';
@@ -33,7 +33,7 @@ const LivreHome = ({ navigation }) => {
   const userData = useSelector((state) => state.userAuth.userDetails);
   const dispatch = useDispatch();
   const bookState = useSelector((state) => state.userAuth.book);
-  const favorite = useSelector((state) => state.favorite.favorite);
+  let favorite = useSelector((state) => state.favorite.favorite);
   const  categoryState = useSelector((state) => state.userAuth.categoryState);
 
  
@@ -49,6 +49,52 @@ const LivreHome = ({ navigation }) => {
   }
 
   const onTapAddTolist = (movie) => {
+    console.log(favorite);
+
+    if(favorite.filter(item => item.support === movie.support).length>=30){
+/*       let newState = favorite.filter(item => item.support !== 'Livre');
+      console.log(favorite.filter(item => item.support !== 'Livre').length);
+      // Retirer le dernier élément du tableau filtré
+      newState.pop(); */
+
+// Trouver l'index du dernier élément avec support "Livre"
+      //const indexToRemove = favorite.map(item => item.support).lastIndexOf("Livre");
+      let lastIndex = null;
+
+      // Parcours du tableau en commençant par la fin
+      for (let i = favorite.length - 1; i >= 0; i--) {
+          // Vérification si le support est "Livre"
+          if (favorite[i].support === movie.support) {
+              // Si c'est le cas, on sauvegarde l'index et on arrête la boucle
+              lastIndex = i;
+              break;
+          }
+      }
+      //favorite.splice(lastIndex, 1);
+      favorite = favorite.filter((item, i) => i !== lastIndex);
+
+      // Affichage de l'index du dernier élément avec support "Livre"
+      console.log("L'index du dernier élément avec support 'Livre' est :", lastIndex);
+      //alert("--last== "+lastIndex + '--'+favorite.length);
+
+      dispatch(setFavorite(favorite));
+
+      
+
+      // Supprimer l'élément correspondant à cet index s'il existe
+/*       if (indexToRemove !== -1) {
+          favorite.splice(indexToRemove, 1);
+      }
+ */
+    
+     // alert(favorite.filter(item => item.support === movie.support).length);
+      //dispatch(setFavorite(favoris_filtres));
+      //console.log(newState);
+
+
+    }
+
+
 
     dispatch(addToList(movie));
     //console.log("list favorite",favorite)

@@ -160,7 +160,7 @@ const App = () => {
    
   
             //alert(data.url_base);
-            dispatch(setUrlWebview(data.url_base));
+            dispatch(setUrlWebview(data.url_webview));
 
             //console.log(data.user.subcription);
 

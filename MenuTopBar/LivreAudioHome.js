@@ -52,7 +52,7 @@ export default function LivreAudioHome({route, navigation}) {
   const onTapAddTolist = (movie) => {
     console.log(favorite);
 
-    if(favorite.filter(item => item.support === movie.support).length>=2){
+    if(favorite.filter(item => item.support === movie.support).length>=30){
 /*       let newState = favorite.filter(item => item.support !== 'Livre');
       console.log(favorite.filter(item => item.support !== 'Livre').length);
       // Retirer le dernier élément du tableau filtré
